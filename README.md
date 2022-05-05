@@ -92,6 +92,7 @@ generator.initialize();
 generator.show();
 ```
 Giving us the following GUI:
+
 ![enter image description here](https://i.imgur.com/Z5bbu0d.png)
 
 ## Verification
@@ -122,6 +123,7 @@ Option requiredOption = Option.create("req", "This is a required option")
 ```
 
 By throwing a `VerificationException`, we're indicating to Aquifer that the supplied argument is invalid. The message passed to the `VerificationException` is then printed on the GUI. 
+
 ![enter image description here](https://i.imgur.com/j73mcj3.png)
 
 ## Icons
@@ -136,6 +138,7 @@ program.setIcon(appIcon);
 ```
 
 which gives us something similar to:
+
 ![enter image description here](https://i.imgur.com/eMJqzBZ.png)
 
 ## Acknowledgements
