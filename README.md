@@ -1,5 +1,6 @@
 # Aquifer
-Quickly generate graphical user interfaces (GUI) for your terminal applications, without fuss of layouts and design! Aquifer is written purely in Java, with its graphical components using JavaFX.
+Quickly generate graphical user interfaces (GUI) for your terminal applications without fussing with layouts and design! 
+**Aquifer** is written purely in Java, along with JavaFX.
 
 # Requirements
 - At least JDK 1.8 with JavaFX 8. 
