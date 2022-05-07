@@ -1,4 +1,6 @@
 /bin/
+/target/
+.vscode
 
 *.class
 *.png
