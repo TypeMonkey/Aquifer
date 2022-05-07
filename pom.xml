@@ -1,0 +1,11 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>jg.aquifer</groupId>
+  <artifactId>aquifer</artifactId>
+  <version>1.0.0</version>
+
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+</project>
