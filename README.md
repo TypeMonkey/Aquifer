@@ -3,9 +3,12 @@ Quickly generate graphical user interfaces (GUI) for your terminal applications 
 **Aquifer** is written purely in Java, along with JavaFX.
 
 # Requirements
-- At least JDK 1.8 with JavaFX 8. 
+- At least JDK 8 with JavaFX 8. 
 	- JRE 1.8 can also be used, but it needs JavaFX 8 bundled with it.
 
+_**Why are you using JavaFX 8?**_ It seems JDK 8 is still the de facto standard for most development setups
+and Oracle JDK 8 (which is the one used to develop this library) bundles JavaFX 8 with it. That said, I
+have no doubt that Aquifer can be easily ported to JDK 9+ and JavaFX 9+.
 
 ## Usage
 
@@ -68,13 +71,13 @@ Here's an example implementation
 public class ProgramIntake implements Intake {
 
   @Override
-  public void submitArguments(String subcommand, Map<String, String> args, Printer printer) {
+  public void submitArguments(String subcommand, Map<String, String> args, Output output) {
     if (subcommand.equals("subOne")) {
       // We retreive the inputted argument from the mapping
       String argument = args.get("req");
       
       // We can also print output to the GUI using printer.
-      printer.println("You gave me the argument '"+argument+"'");
+      output.out.println("You gave me the argument '"+argument+"'");
     }
   }
 }

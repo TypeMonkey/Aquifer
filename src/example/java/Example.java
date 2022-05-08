@@ -1,5 +1,3 @@
-package example;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
@@ -8,7 +6,7 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import jg.aquifer.Intake;
-import jg.aquifer.Printer;
+import jg.aquifer.Output;
 import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
@@ -20,13 +18,13 @@ public class Example extends Application {
   public static class ProgramIntake implements Intake {
 
     @Override
-    public void submitArguments(String subcommand, Map<String, String> args, Printer printer) {
+    public void submitArguments(String subcommand, Map<String, String> args, Output printer) {
       if (subcommand.equals("subOne")) {
         // We retreive the inputted argument from the mapping
         String argument = args.get("req");
         
         // We can also print output to the GUI using printer.
-        printer.println("You gave me the argument '"+argument+"'");
+        printer.out.println("You gave me the argument '"+argument+"'");
       }
     }
 

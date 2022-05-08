@@ -1,6 +1,10 @@
 package jg.aquifer.ui;
 
+import java.io.IOException;
 import java.io.PipedInputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,6 +16,8 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -22,6 +28,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
@@ -29,7 +36,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -45,6 +54,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jg.aquifer.Intake;
+import jg.aquifer.Output;
 import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Flag;
@@ -59,7 +69,7 @@ public class Visualizer {
   private final Stage content;
   private Scene optionsScene;
   private Scene outputScene;
-  private Callback<String, Void> outputAppendFunc;
+  private Output outputStreams;
       
   private Map<String, RawArgumentForm> rawArguments;
   private volatile RawArgumentForm currentForm;
@@ -143,9 +153,7 @@ public class Visualizer {
           
       intake.submitArguments(currentForm.getSubcommand().getName(), 
                              processedForm, 
-                             (content) -> {
-                               Platform.runLater(() -> {outputAppendFunc.call(content);});
-                             });
+                             outputStreams);
       content.setScene(outputScene);
       content.centerOnScreen();
     } catch (IncompleteException e) {
@@ -154,6 +162,27 @@ public class Visualizer {
       alert.setResizable(false);
       alert.showAndWait();
     }
+  }
+  
+  private Output generateOutputStreams(TextArea outputArea) {
+    final Writer stOut = new Writer() {
+      
+      @Override
+      public void write(char[] cbuf, int off, int len) throws IOException {
+        char [] range = Arrays.copyOfRange(cbuf, off, off + len);        
+        Platform.runLater(() -> {outputArea.appendText(String.valueOf(range));});
+      }
+      
+      @Override
+      public void flush() throws IOException {}
+      
+      @Override
+      public void close() throws IOException {}
+    };
+    
+    final PrintWriter stdPrintOut = new PrintWriter(stOut);
+    
+    return new Output(stdPrintOut, stdPrintOut);   
   }
   
   private Pane generateOutputScene() {   
@@ -166,18 +195,29 @@ public class Visualizer {
     outputArea.setWrapText(true);
     outputArea.setEditable(false);
     
+    outputStreams = generateOutputStreams(outputArea);
+    
+    /*
     this.outputAppendFunc = new Callback<String, Void>() {
       @Override
       public Void call(String param) {
+        int caretPosition = outputArea.caretPositionProperty().get();
         outputArea.appendText(param+System.lineSeparator());
+        outputArea.positionCaret(caretPosition);
         return null;
       }
     };
+    */
     
     final ScrollPane scrollPane = new ScrollPane(outputArea);
     scrollPane.setFitToHeight(true);
     scrollPane.setFitToWidth(true);
     
+    //Set starting height
+    scrollPane.setPrefHeight(500);
+    
+    outputArea.setScrollTop(25);
+
     AnchorPane.setBottomAnchor(outputArea, 0.0);
     AnchorPane.setTopAnchor(outputArea, 0.0);
     AnchorPane.setLeftAnchor(outputArea, 0.0);

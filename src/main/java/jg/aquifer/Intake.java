@@ -29,8 +29,8 @@ public interface Intake {
    * 
    * @param subcommand - the subcommand being invoked
    * @param arguments - the arguments suppled on the UI
-   * @param printer - the function to call to print output messages to the UI
+   * @param output - an Output object detailing the various streams of output to the generated UI
    */
-  public abstract void submitArguments(String subcommand, Map<String, String> arguments, Printer printer);
+  public abstract void submitArguments(String subcommand, Map<String, String> arguments, Output output);
   
 }

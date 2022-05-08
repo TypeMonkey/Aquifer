@@ -1,5 +1,3 @@
-package example;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
@@ -9,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import jg.aquifer.Intake;
-import jg.aquifer.Printer;
+import jg.aquifer.Output;
 import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
@@ -52,16 +50,16 @@ public class Main extends Application {
     Visualizer generator = new Visualizer(program, new Intake() {
 
       @Override
-      public void submitArguments(String subcommand, Map<String, String> arguments, Printer printer) {
+      public void submitArguments(String subcommand, Map<String, String> arguments, Output printer) {
         new Thread(() -> {
-          printer.println("  --> Argument: "+subcommand+" | "+arguments);
+          printer.out.println("  --> Argument: "+subcommand+" | "+arguments);
 
-          for(int i = 0; i < 50 ; i++) {
+          for(int i = 0; i < 100 ; i++) {
             try {
-              printer.println("  --> This is "+i+"th message I'm printing!!!");
-              Thread.sleep(250);
+              printer.out.println("  --> This is "+i+"th message I'm printing!!!");
+              Thread.sleep(150);
             } catch (Exception e) {
-              printer.println("Exception!! "+e.getMessage());
+              printer.out.println("Exception!! "+e.getMessage());
             }
           }
           
@@ -84,7 +82,8 @@ public class Main extends Application {
     
   }
 
-  public static void main(String[] args) throws Exception{
+  public static void main(String[] args) throws Exception {
+    System.out.println(System.getProperty( "javafx.runtime.version" ));
     Main.launch(args);
   }
 
