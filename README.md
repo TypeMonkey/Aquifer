@@ -14,13 +14,13 @@ have no doubt that Aquifer can be easily ported to JDK 9+ and JavaFX 9+.
 
 ### Option
 We first start with the `Option` class. An `Option` describes a parameter for your program (or a subprogram/subcommand of it). 
-```
+```java
 Option requiredOption = new Option("req", "This is a required option", true);
 ```
  This creates a required Option with the name  `req` whose description is `This is a required option`. Passing `false` instead would make this Option optional.
 
 Additionally, we can create the equivalent Option using `Option.create` by: 
-```
+```java
 Option requiredOption = Option.create("req", "This is a required option").require().build();
 ```
 Now that we have an `Option`, we can either set it to be tied to your program or a subcommand of your program.
@@ -29,7 +29,7 @@ Now that we have an `Option`, we can either set it to be tied to your program or
 A `Program` represents the overall `Options` of your application.
 
 We can add our `Option` to our `Program` by doing:
-```
+```java
 // Creates a Program
 Program program = new Program("Example Program", "This is a description");
 
@@ -42,7 +42,7 @@ There may be situations where we prefer a separation of responsibilities in our 
 This is synonymous with the `commit`, `add`, `push`, etc. subcommands of Git.
 
 To do so:
-```
+```java
 // Creates a subcommand called 'subOne'
 Subcommand subcommand = new Subcommand("subOne");
 
@@ -55,7 +55,7 @@ subcommand.addOption(requiredOption);
 The `Options` of a `Subcommand` must be unique - in terms of it name. A `Program` itself is represented with its own `Subcommand` instance - which is how we're able to add program parameters.
 
 We then add our `Subcommand` to our `Program` by doing:
-```
+```java
 program.addSubcommand(subcommand);
 ```
 
@@ -67,7 +67,7 @@ Now that we have our `Program` created, we can now visualize it!
 But before we do, we need to implement the interface `jg.aquifer.Intake`, which is the drop off point for arguments to `Options` that was submitted by the user and entry point of your application.
 
 Here's an example implementation
-```
+```java
 public class ProgramIntake implements Intake {
 
   @Override
@@ -85,7 +85,7 @@ public class ProgramIntake implements Intake {
 
 ### Visualizer
 Okay, I wanna see this GUI now! We can do so by doing:
-```
+```java
 //We need to pass our Program and Intake instances.
 Visualizer generator = new Visualizer(program, new ProgramIntake());
 
@@ -103,12 +103,12 @@ Giving us the following GUI:
 Sometimes, it's useful to verify arguments prior to being submitted to your application. With Aquifer, you can easily do so while providing live feedback to the user.
 
 Recall our `Options` instance from above:
-```
+```java
 Option requiredOption = Option.create("req", "This is a required option").require().build();
 ```
 Say, we've decided to make the argument to `req` to only be non-negative integers. To create such a requirement for Aquifer to enforce, we'll need to pass our `Option` a `Verifier`:
 
-```
+```java
 Verifier noNegatives = (op, form, arg) -> {
     try {
       if(Long.parseLong(arg) < 0) {
@@ -132,7 +132,7 @@ By throwing a `VerificationException`, we're indicating to Aquifer that the supp
 
 ## Icons
 Flashy GUIs are the best! You can set for a small program icon to be display on the header by doing:
-```
+```java
 //Using javafx.scene.image.Image
 Image appIcon = new new Image(new FileInputStream(new File("sample_icon.png")));
 
@@ -162,7 +162,7 @@ The `generateDisplay()` is the method that houses the display logic for an `Opti
 
 ## Download
 ### Maven
-```
+```xml
 <dependency>
   <groupId>io.github.typemonkey</groupId>
   <artifactId>aquifer</artifactId>
