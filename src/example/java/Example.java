@@ -32,7 +32,10 @@ public class Example extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    Option requiredOption = Option.create("req", "This is a required option").require().setVerifier(Verifier.NON_NEG_WHOLE).build();
+    Option requiredOption = Option.create("req", "This is a required option")
+                                  .require()
+                                  .setVerifier(Verifier.checkAll(Verifier.WHOLE_NUM, Verifier.NEG_WHOLE))
+                                  .build();
     
     Program program = new Program("sampleProg", "This is a sample program to test things out");
     program.setIcon(new Image(new FileInputStream(new File("sample_icon.png"))));

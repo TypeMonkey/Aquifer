@@ -11,6 +11,7 @@ import jg.aquifer.Output;
 import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
+import jg.aquifer.commands.options.FileOption;
 import jg.aquifer.commands.options.Flag;
 import jg.aquifer.commands.options.Option;
 import jg.aquifer.commands.options.RadioOption;
@@ -28,7 +29,7 @@ public class Main extends Application {
     
     Subcommand subcommand = new Subcommand("withdesc");
     subcommand.setDescription("This is a subcommand for the program");  
-    subcommand.addOption(new Option("minus", "Removes a specific file", true));
+    subcommand.addOption(new Option("minus", "Removes a specific file", true, Verifier.WHOLE_NUM));
     
     program.addSubcommand(subcommand);
 
@@ -40,6 +41,8 @@ public class Main extends Application {
     
     program.addProgramOption(new Option("amend", "Amends files in the current directory", true));
     program.addProgramOption(new RadioOption("multi", "Multiple files in the current directory", true, "option1", "option2", "option3"));
+    
+    program.addProgramOption(new FileOption("multi", "Multiple files in the current directory", true, Verifier.STR_VERIFIER, new File(System.getProperty("user.home"))));
     
     program.addProgramOption(new Flag("allowDups", "Allows duplicate files"));
     program.addProgramOption(new Flag("flag2", "2Allows duplicate files"));
@@ -62,6 +65,9 @@ public class Main extends Application {
               printer.out.println("Exception!! "+e.getMessage());
             }
           }
+          
+          Exception exception = new Exception("dummy error!");
+          exception.printStackTrace(printer.err);
           
         }).start();
       }

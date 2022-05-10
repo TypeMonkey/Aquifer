@@ -1,5 +1,8 @@
 package jg.aquifer.commands;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import jg.aquifer.commands.options.Option;
 import jg.aquifer.commands.options.VerificationException;
 import jg.aquifer.ui.RawArgumentForm;
@@ -108,7 +111,46 @@ public interface Verifier {
       throw new VerificationException("Expected a boolean value");
     }
   };
+  
+  /**
+   * Accepts only files/directories that exists.
+   */
+  public static final Verifier FILE_EXISTS = (op, form, arg) -> {
+    if (Files.notExists(Paths.get(arg))) {
+      throw new VerificationException("The file does not exist.");
+    }
+    else if (!Files.exists(Paths.get(arg))) {
+      throw new VerificationException("The existance of this file can't be verfied.");
+    }
+  };
+  
+  /**
+   * Accepts only files (not directories) that can be read from
+   */
+  public static final Verifier FILE_READ = (op, form, arg) -> {
+    if (!Files.isReadable(Paths.get(arg))) {
+      throw new VerificationException("The file cannot be read");
+    }
+  };
 
+  /**
+   * Accepts only files (not directories) that can be written to
+   */
+  public static final Verifier FILE_WRITE = (op, form, arg) -> {
+    if (!Files.isWritable(Paths.get(arg))) {
+      throw new VerificationException("The file cannot be read");
+    }
+  };
+  
+  /**
+   * Accepts only files (not directories) that can be executed
+   */
+  public static final Verifier FILE_EXEC = (op, form, arg) -> {
+    if (!Files.isExecutable(Paths.get(arg))) {
+      throw new VerificationException("The file cannot be read");
+    }
+  };
+  
   /**
    * Verifies whether the provided argument - as a string - matches
    * the requirements of the given Option.
@@ -119,4 +161,64 @@ public interface Verifier {
    */
   public void verify(Option option, RawArgumentForm form, String arg) throws VerificationException;
   
+  /**
+   * Returns a single Verifier that 
+   * iterates over the provided Verifiers and fails at the first VerificationException
+   * @param verifiers - the Verifiers to invoke
+   * @return a Verifier that fails at the first VerificationException
+   */
+  public static Verifier all(Verifier ... verifiers) {
+    return (op, form, arg) -> {
+      for (Verifier v : verifiers) {
+        v.verify(op, form, arg);
+      }
+    };
+  }
+  
+  /**
+   * Returns a single Verifier that 
+   * iterates over all of the provided Verifiers and collects the message of each VerificationException
+   * thrown into a larger VerificationException containing all messages separated by newline
+   * @param verifiers - the Verifiers to invoke
+   * @return a Verifier that collects the messages of all thrown VerificationExceptions
+   */
+  public static Verifier checkAll(Verifier ... verifiers) {
+    return (op, form, arg) -> {
+      
+      String mess = null;
+      
+      System.out.println("---checkall!!!!");
+      
+      for (Verifier v : verifiers) {
+        try {
+          v.verify(op, form, arg);
+          System.out.println("passed!!!");
+        } catch (VerificationException e) {
+          mess = mess == null ? e.getMessage() + System.lineSeparator() :
+                                mess + e.getMessage() + System.lineSeparator();
+        }      
+      }
+      
+      System.out.println("        --> "+mess);
+      
+      if (mess != null) {
+        throw new VerificationException(mess);
+      }
+    };
+  }
+  
+  /**
+   * Returns a single Verifier that 
+   * iterates over the provided Verifiers and returns at the first success
+   * @param verifiers - the Verifiers to invoke
+   * @return a Verifier that returns at the first success
+   */
+  public static Verifier any(Verifier ... verifiers) {
+    return (op, form, arg) -> {
+      for (Verifier v : verifiers) {
+        v.verify(op, form, arg);
+        return;
+      }
+    };
+  }
 }

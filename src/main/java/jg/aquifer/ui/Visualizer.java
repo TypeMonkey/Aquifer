@@ -1,7 +1,6 @@
 package jg.aquifer.ui;
 
 import java.io.IOException;
-import java.io.PipedInputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
@@ -11,15 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -28,7 +22,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
@@ -36,11 +29,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -59,8 +49,13 @@ import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Flag;
 import jg.aquifer.commands.options.Option;
-import jg.aquifer.ui.RawArgumentForm.Value;
+import jg.aquifer.ui.Value;
 
+/**
+ * Houses logic for generating a JavaFX-based UI from a Program instance.
+ * 
+ * @author Jose
+ */
 public class Visualizer {
   
   private Program program;
@@ -70,17 +65,22 @@ public class Visualizer {
   private Scene optionsScene;
   private Scene outputScene;
   private Output outputStreams;
-      
+        
   private Map<String, RawArgumentForm> rawArguments;
   private volatile RawArgumentForm currentForm;
   
   private volatile boolean isShowing;
   private volatile boolean isInitialized;
   
+  /**
+   * Constructs a Visualizer
+   * @param program - the Program to create a GUI for
+   * @param intake - the Intake to submit arguments to
+   */
   public Visualizer(Program program, Intake intake) {
     this.program = program;
     this.intake = intake;
-    this.rawArguments = new HashMap<>();
+    this.rawArguments = new HashMap<>();    
     this.content = new Stage();
   }
   
@@ -95,7 +95,7 @@ public class Visualizer {
       
       Pane outputPane = generateOutputScene();
       outputScene = new Scene(outputPane);    
-      
+            
       isInitialized = true;
     }
   }
@@ -140,6 +140,9 @@ public class Visualizer {
     mainContentVBox.getChildren().addAll(header, body, footer);
         
     contentPane.getChildren().add(mainContentVBox);
+    
+    //Sets the initial size of the content pane
+    contentPane.setPrefSize(400, 600);
     
     return contentPane;
   }
@@ -269,7 +272,9 @@ public class Visualizer {
       
       System.out.println("--- processing: "+argVal.getKey()+" <-> "+argVal.getValue());
       
-      if (argVal.getValue().getValue() != null && !argVal.getValue().getValue().isEmpty() && !argVal.getValue().isBadValue()) {
+      if (argVal.getValue().getValue() != null && 
+          !argVal.getValue().getValue().isEmpty() && 
+          !argVal.getValue().isVerified()) {
         args.put(argVal.getKey().getOptName(), argVal.getValue().getValue());
         
         System.out.println("    -> valid :D");
@@ -326,6 +331,9 @@ public class Visualizer {
       
       HBox.setHgrow(iconPane, Priority.NEVER);
       header.getChildren().add(iconPane);
+      
+      //set the image as the program's icon to display on the application's header
+      content.getIcons().add(program.getImage());
     }
     
     return header;
@@ -419,7 +427,7 @@ public class Visualizer {
     paneVBox.getChildren().add(flagsArgs);
     flagsArgs.setCollapsible(false);
     VBox.setVgrow(flagsArgs, Priority.ALWAYS);
-    
+
     
     for(Option option : subcommand.getOptions().values()) {      
       System.out.println(option.getOptName()+" | "+option.isRequired());

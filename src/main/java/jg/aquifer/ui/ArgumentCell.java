@@ -1,5 +1,6 @@
 package jg.aquifer.ui;
 
+import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Option;
@@ -16,7 +17,7 @@ public class ArgumentCell extends ListCell<Option> {
   
   private final Subcommand subcommand;
   private final RawArgumentForm argumentForm;
-  
+    
   public ArgumentCell(Subcommand subcommand, RawArgumentForm argumentForm) {
     // TODO Auto-generated constructor stub
     this.subcommand = subcommand;
@@ -32,9 +33,7 @@ public class ArgumentCell extends ListCell<Option> {
       setText(null);
       setGraphic(null);
     } else {     
-      setGraphic(item.generateDisplay(argumentForm, subcommand));
+      setGraphic(item.makeDisplay(argumentForm, subcommand));
     }
   }
-  
-  
 }

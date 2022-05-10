@@ -45,10 +45,10 @@ public class Flag extends Option {
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (newValue == Boolean.TRUE) {
-          getHolder().setValue(VALUE_PLACE_HOLDER).validate();
+          getHolder().setValue(VALUE_PLACE_HOLDER).verify();
         }
         else {
-          getHolder().setValue(null).validate();
+          getHolder().setValue(null).verify();
         }
       }
     });

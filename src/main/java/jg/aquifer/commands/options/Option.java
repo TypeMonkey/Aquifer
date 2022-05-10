@@ -16,7 +16,7 @@ import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
-import jg.aquifer.ui.RawArgumentForm.Value;
+import jg.aquifer.ui.Value;
 
 /**
  * An option is a named parameter to a Subcommand, which may or may not be required.
@@ -81,6 +81,8 @@ public class Option {
   private final Value holder;
   private final Verifier verifier;
   
+  private Node display;
+  
   /**
    * Constructs an optional Option with a passive Verifier (Verifier.STR_VERIFIER)
    * @param optName - the name of this Option
@@ -128,13 +130,21 @@ public class Option {
     return optName.hashCode();
   }
   
+  public final Node makeDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
+    if (display == null) {
+      display = generateDisplay(argumentForm, subcommand);
+    }
+    
+    return display;
+  }
+  
   /**
    * Generates the graphics to display for this VerifiableOption on the generated UI
    * @param argumentForm - the RawArgumentForm that the inputed argument will be applied to
    * @param subcommand - the Subcommand this VerifiableOption belongs to.
    * @return the Node that holds the graphics for this VerifiableOption
    */
-  public Node generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {    
+  protected Node generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {    
     final VBox mainCellLayout = new VBox(5);
     
     final Text argumentName = new Text(optName);
@@ -171,15 +181,15 @@ public class Option {
         try {
           verifier.verify(this, argumentForm, newValue);
           exceptionLabel.setText("");
-          holder.setValue(newValue).validate();
+          holder.setValue(newValue).verify();
           mainCellLayout.getChildren().remove(exceptionLabel);
         } catch (VerificationException e) {
-          if(!holder.isBadValue()) {
+          if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
             exceptionLabel.setText(e.getMessage());
             mainCellLayout.getChildren().add(exceptionLabel);
           }
           
-          holder.invalidate();
+          holder.unverify();
         }
       }
     });

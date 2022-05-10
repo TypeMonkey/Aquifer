@@ -15,47 +15,6 @@ import jg.aquifer.commands.options.Option;
  */
 public class RawArgumentForm {
   
-  /**
-   * A wrapper class for supplied arguments
-   * @author Jose Guaro
-   */
-  public static class Value {
-    private String value;
-    private boolean badValue;
-    
-    public Value() {
-      this.badValue = true;
-    }
-    
-    public Value setValue(String value) {
-      this.value = value;
-      return this;
-    }
-    
-    public String getValue() {
-      return value;
-    }
-    
-    public boolean isBadValue() {
-      return badValue;
-    }
-    
-    public Value validate() {
-      this.badValue = false;
-      return this;
-    }
-    
-    public Value invalidate() {
-      this.badValue = true;
-      return this;
-    }
-    
-    @Override
-    public String toString() {
-      return "|"+value+"|  isBadValue? "+badValue;
-    }
-  }
-  
   private Subcommand subcommand;
   private Map<Option, Value> rawArguments;
 
