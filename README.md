@@ -179,7 +179,7 @@ The `generateDisplay()` is the method that houses the display logic for an `Opti
 Other build tools can be used as show [here](https://search.maven.org/artifact/io.github.typemonkey/aquifer/1.0.0/jar).
 
 ## Roadmap
-There's a lot I was to do with Aquifer. Here's what I currently have planned:
+There's a lot I want to do with Aquifer. Here's what I currently have planned:
 - Bindings for various CLI Libraries (Commons CLI and PicoCLI are my priority)
 - Publish to Central Maven Repository
 - New bundled Option types (numerical sliders)
