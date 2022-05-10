@@ -154,9 +154,9 @@ public interface Verifier {
   /**
    * Verifies whether the provided argument - as a string - matches
    * the requirements of the given Option.
-   * @param arg - the supplied argument
+   * @param option - the Option the provided argument was meant for
    * @param form - the RawArgumentForm that the given Option is filling out
-   * @param arg - the argument
+   * @param arg - the supplied argument
    * @throws VerificationException if arg doesn't match 
    */
   public void verify(Option option, RawArgumentForm form, String arg) throws VerificationException;

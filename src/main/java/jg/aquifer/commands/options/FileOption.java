@@ -38,11 +38,9 @@ public class FileOption extends Option {
   private FileChooser fileChooser;
   
   /**
-   * Constructs an FileOption with 
-   * @param optName - the name of this FileOption
-   * @param description - the description of this FileOption
-   * @param isRequired - whether this FileOption is required
-   * @param verifier - the Verifier to use to validate arguments to this FileOption
+   * Constructs an FileOption from a base Option
+   * @param option - the base Option
+   * @param startingDirectory - the directory to start the file chooser at
    * @param extensionFilters - the file extension filters to filter file listings by
    */
   public FileOption(Option option,
