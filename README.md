@@ -1,4 +1,4 @@
-# Aquifer
+﻿# Aquifer
 Quickly generate graphical user interfaces (GUI) for your terminal applications without fussing with layouts and design! 
 **Aquifer** is written purely in Java, along with JavaFX.
 
@@ -160,7 +160,25 @@ A `RadioOption` is an `Option` whose argument can only be **one out of a specifi
 If there's use case that the bundled `Option` types doesn't quite answer, the `Option` class can be readily inherited for customization. 
 The `generateDisplay()` is the method that houses the display logic for an `Option`. This can be overridden with your own display logic that properly displays your custom `Option`.
 
-### Roadmap
+## Download
+### Maven
+```
+<dependency>
+  <groupId>io.github.typemonkey</groupId>
+  <artifactId>aquifer</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+### Gradle
+`implementation 'io.github.typemonkey:aquifer:1.0.0'`
+
+### Gradle (Kotlin)
+`implementation("io.github.typemonkey:aquifer:1.0.0")`
+
+Other build tools can be used as show [here](https://search.maven.org/artifact/io.github.typemonkey/aquifer/1.0.0/jar).
+
+## Roadmap
 There's a lot I was to do with Aquifer. Here's what I currently have planned:
 - Bindings for various CLI Libraries (Commons CLI and PicoCLI are my priority)
 - Publish to Central Maven Repository
