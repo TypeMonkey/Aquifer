@@ -34,6 +34,12 @@ public interface OutputConstants {
   public static final String OUTPUT_PANE = "outputPane";
 
   /**
+   * ID of the SplitPane that controls the user-comamnded
+   * expansion of both the input and output panes.
+   */
+  public static final String SPLIT_PANE = "splitPane";
+
+  /**
    * ID of the AnchorPane that holds the output ScrollPane
    */
   public static final String OUTPUT_SCROLL_PANE = "outputScrollPane";
