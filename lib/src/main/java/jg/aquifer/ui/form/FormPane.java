@@ -1,16 +1,22 @@
 package jg.aquifer.ui.form;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -23,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -39,7 +46,7 @@ import jg.aquifer.ui.RawArgumentForm;
  * The "main" page where users supply
  * program/subprogram arguments.
  */
-public class FormPane extends Pane implements FormConstants {
+public class FormPane extends AnchorPane implements FormConstants {
   private static final Logger LOG = LoggerFactory.getLogger(FormPane.class);
 
   private final Program program;
@@ -66,12 +73,22 @@ public class FormPane extends Pane implements FormConstants {
   private void applyLayout() {
     //We use a StackPane to hold everything at the center of our window
     final StackPane contentPane = new StackPane();
+    AnchorPane.setBottomAnchor(contentPane, 0.0);
+    AnchorPane.setTopAnchor(contentPane, 0.0);
+    AnchorPane.setLeftAnchor(contentPane, 0.0);
+    AnchorPane.setRightAnchor(contentPane, 0.0);
     contentPane.setAlignment(Pos.CENTER);
     contentPane.setId(CONTENT_PANE);
+    contentPane.setMinSize(PREF_WIDTH, PREF_HEIGHT);
+    contentPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
     //We'll be using a VBox to actually layout our components
     final VBox mainVBox = new VBox();
     mainVBox.setId(CONTENT_VBOX);
+    AnchorPane.setBottomAnchor(mainVBox, 0.0);
+    AnchorPane.setTopAnchor(mainVBox, 0.0);
+    AnchorPane.setLeftAnchor(mainVBox, 0.0);
+    AnchorPane.setRightAnchor(mainVBox, 0.0);
 
     /*
      * Our layout has three main parts:
@@ -80,14 +97,14 @@ public class FormPane extends Pane implements FormConstants {
      * - Footer - Has the "Run" and "Cancel" buttons
      */
     final TabPane formBody = createBody();
+
     final Pane footer = createFooter();
-    VBox.setVgrow(formBody, Priority.ALWAYS);
+
+    //final AnchorPane footAnchor = new AnchorPane(footer);
     mainVBox.getChildren().addAll(headerPane, formBody, footer);
 
+    //final AnchorPane mainVBoxAnchor = new AnchorPane(mainVBox);
     contentPane.getChildren().add(mainVBox);
-
-    contentPane.setPrefSize(PREF_WIDTH, PREF_HEIGHT);
-
     //Lastly, our contentPane will be the only thing we add to the parent
     getChildren().add(contentPane);
   }
@@ -130,6 +147,7 @@ public class FormPane extends Pane implements FormConstants {
      */
     currentForm = rawArguments.get(bodyPane.getSelectionModel().selectedItemProperty().get().getText());
     
+    VBox.setVgrow(bodyPane, Priority.ALWAYS);
     return bodyPane;
   }
 
@@ -170,6 +188,26 @@ public class FormPane extends Pane implements FormConstants {
      */
     final RawArgumentForm subcommandForm = new RawArgumentForm(subcommand);
     rawArguments.put(subcommand.getName(), subcommandForm);
+
+    final HashSet<Option> requiredOpts = new HashSet<>();
+    final HashSet<Flag> flagOpts = new HashSet<>();
+    final HashSet<Option> optionalOpts = new HashSet<>();
+    
+    for(Option option : subcommand.getOptions().values()) {      
+      LOG.info(option.getOptName()+" | "+option.isRequired());
+      
+      subcommandForm.setOptionArgument(option, option.getHolder());
+      
+      if (option instanceof Flag) {
+        flagOpts.add((Flag) option);
+      }       
+      else if (option.isRequired()) {
+        requiredOpts.add(option);
+      }
+      else {
+        optionalOpts.add(option);
+      }
+    }
     
     /*
      * Recall that we categorize a Subcommand's options in the following
@@ -184,83 +222,46 @@ public class FormPane extends Pane implements FormConstants {
      */
 
     //Required options ListView
-    final ListView<Option> requiredArgsFlow = new ListView<>();
-    {
-      requiredArgsFlow.setId(TAB_ID+TAB_REQ_LIST_SUFFIX);
-
-      requiredArgsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
-        @Override
-        public ListCell<Option> call(ListView<Option> param) {
-          LOG.info("---returning new view");
-          return new ArgumentCell(subcommand, subcommandForm);
-        }
-      });
-      
-      //Required options TitledPane
-      final TitledPane requiredArgs = new TitledPane("Required Arguments", requiredArgsFlow);
-      requiredArgs.setId(TAB_ID+TAB_REQ_PANE_SUFFIX);
-
-      paneVBox.getChildren().add(requiredArgs);
-      requiredArgs.setCollapsible(false);
-      VBox.setVgrow(requiredArgs, Priority.ALWAYS);
-    }
+    final TitledPane requiredPane = createOptListing("Required Parameters",
+                                                     TAB_ID, 
+                                                     TAB_REQ_LIST_SUFFIX, 
+                                                     TAB_REQ_PANE_SUFFIX, 
+                                                     subcommand, 
+                                                     subcommandForm, 
+                                                     requiredOpts);
+    paneVBox.getChildren().add(requiredPane);
 
     //Optional options ListView
-    final ListView<Option> optionalArgsFlow = new ListView<>();
-    {
-      optionalArgsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
-        @Override
-        public ListCell<Option> call(ListView<Option> param) {
-          LOG.info("---returning new view");
-          return new ArgumentCell(subcommand, subcommandForm);
-        }
-      });
-      
-      //Optional options TitledPane
-      final TitledPane optionalArgs = new TitledPane("Optional Arguments", optionalArgsFlow);
-      optionalArgs.setId(TAB_ID+TAB_REQ_PANE_SUFFIX);
-
-      paneVBox.getChildren().add(optionalArgs);
-      optionalArgs.setCollapsible(false);
-      VBox.setVgrow(optionalArgs, Priority.ALWAYS);
-    }
+    final TitledPane optionalPane = createOptListing("Optional Parameters",
+                                                     TAB_ID, 
+                                                     TAB_OPT_LIST_SUFFIX, 
+                                                     TAB_OPT_PANE_SUFFIX, 
+                                                     subcommand, 
+                                                     subcommandForm, 
+                                                     optionalOpts);
+    paneVBox.getChildren().add(optionalPane);
 
     //Optional options ListView
-    final ListView<Option> flagsFlow = new ListView<>();
-    {
-      flagsFlow.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-      flagsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
-        @Override
-        public ListCell<Option> call(ListView<Option> param) {
-          LOG.info("---returning new view");
-          return new ArgumentCell(subcommand, subcommandForm);
-        }
-      });
-      
-      //Optional options TitledPane
-      final TitledPane flagsArgs = new TitledPane("Flags", flagsFlow);
-      flagsArgs.setId(TAB_ID+TAB_FLAG_PANE_SUFFIX);
+    final TitledPane flagPane = createOptListing("Flag",
+                                                 TAB_ID, 
+                                                 TAB_FLAG_LIST_SUFFIX, 
+                                                 TAB_FLAG_PANE_SUFFIX, 
+                                                 subcommand, 
+                                                 subcommandForm, 
+                                                 flagOpts);
+    paneVBox.getChildren().add(flagPane);
 
-      paneVBox.getChildren().add(flagsArgs);
-      flagsArgs.setCollapsible(false);
-      VBox.setVgrow(flagsArgs, Priority.ALWAYS);
-    }
-    
-    for(Option option : subcommand.getOptions().values()) {      
-      LOG.info(option.getOptName()+" | "+option.isRequired());
-      
-      subcommandForm.setOptionArgument(option, option.getHolder());
-      
-      if (option instanceof Flag) {
-        flagsFlow.getItems().add(option);
-      }       
-      else if (option.isRequired()) {
-        requiredArgsFlow.getItems().add(option);
-      }
-      else {
-        optionalArgsFlow.getItems().add(option);
-      }
-    }
+    /*
+     * This pane is needed in the case that all three
+     * TitledPanes are collapsed. Without this pane,
+     * the collapsed TitledPanes awkwardly move to the middle of the Vbox
+     * which is weird. We want it to the top of the Vbox
+     */
+    final Pane bufferPane = new Pane();
+    bufferPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    VBox.setVgrow(bufferPane, Priority.ALWAYS);
+    HBox.setHgrow(bufferPane, Priority.ALWAYS);
+    paneVBox.getChildren().add(bufferPane);
     
     AnchorPane.setBottomAnchor(paneVBox, 0.0);
     AnchorPane.setTopAnchor(paneVBox, 0.0);
@@ -269,6 +270,7 @@ public class FormPane extends Pane implements FormConstants {
     
     //We place our VBox in an AnchorPane so it resizes with the rest of the UI
     AnchorPane anchoredPane = new AnchorPane(paneVBox);
+    VBox.setVgrow(anchoredPane, Priority.ALWAYS);
     anchoredPane.setId(TAB_ID+TAB_ANCHOR_SUFFIX);
 
     //anchoredPane.prefHeight(100);
@@ -279,6 +281,50 @@ public class FormPane extends Pane implements FormConstants {
     return tab;
   }
 
+  private TitledPane createOptListing(String tabTitle,
+                                      String tabID, 
+                                      String listSuffix,
+                                      String paneSuffix,
+                                      Subcommand subcommand, 
+                                      RawArgumentForm form, 
+                                      Set<? extends Option> options) {
+    final ListView<Option> requiredArgsFlow = new ListView<>(FXCollections.observableArrayList(options));
+    requiredArgsFlow.setId(tabID+listSuffix);
+
+    requiredArgsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
+      @Override
+      public ListCell<Option> call(ListView<Option> param) {
+        LOG.info("---returning new view");
+        return new ArgumentCell(subcommand, form);
+      }
+    });
+
+    Node titledPaneContent = null;
+    if (options.isEmpty()) {
+      final Label emptyLabel = new Label("No parameters listed!");
+      emptyLabel.setPrefHeight(250);
+
+      final StackPane emptyContentPane = new StackPane(emptyLabel);
+      VBox.setVgrow(emptyContentPane, Priority.ALWAYS);
+      emptyContentPane.setAlignment(Pos.CENTER);
+      titledPaneContent = emptyContentPane;
+    }
+    else {
+      titledPaneContent = requiredArgsFlow;
+    }
+    
+    //Required options TitledPane
+    final TitledPane requiredArgs = new TitledPane(tabTitle, titledPaneContent);
+    requiredArgs.setId(tabID+paneSuffix);
+
+    //paneVBox.getChildren().add(requiredArgs);
+    requiredArgs.setCollapsible(true);
+    VBox.setVgrow(requiredArgs, Priority.ALWAYS);
+    VBox.setVgrow(requiredArgsFlow, Priority.ALWAYS);
+    
+    return requiredArgs;
+  }
+
   private Pane createFooter() {
     /*
      * Our footer contains only two buttons, "Run" and "Cancel".
@@ -287,11 +333,13 @@ public class FormPane extends Pane implements FormConstants {
     final HBox footerBox = new HBox(10);
     footerBox.setId(FOOTER);
     footerBox.setAlignment(Pos.CENTER);
+    footerBox.setMaxSize(Double.MAX_VALUE, 30.0);
+    VBox.setVgrow(footerBox, Priority.ALWAYS);
     
     final Button runButton = new Button("Run");
     runButton.setId(RUN_BUTTON);
-    runButton.setPrefWidth(60);
-
+    runButton.setMinWidth(60);
+    runButton.setMaxSize(Double.MAX_VALUE, 30.0);
     HBox.setMargin(runButton, new Insets(10));
     HBox.setHgrow(runButton, Priority.ALWAYS);
     runButton.setOnAction((event) -> {
@@ -301,10 +349,11 @@ public class FormPane extends Pane implements FormConstants {
       intake.accept(currentForm);
     });
        
+
     final Button cancelButton = new Button("Cancel");
     cancelButton.setId(CANCEL_BUTTON);
-    cancelButton.setPrefWidth(60);
-
+    cancelButton.setMinWidth(60);
+    cancelButton.setMaxSize(Double.MAX_VALUE, 30.0);
     HBox.setMargin(cancelButton, new Insets(10));
     HBox.setHgrow(cancelButton, Priority.ALWAYS);
     cancelButton.setOnAction((event) -> closeOperation.run());

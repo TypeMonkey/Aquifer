@@ -1,13 +1,15 @@
 package jg.aquifer.ui.io;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
+/**
+ * A java.io.Writer that writes to a TextArea.
+ */
 public class UIPrinter extends Writer {
 
     private final TextArea targetArea;

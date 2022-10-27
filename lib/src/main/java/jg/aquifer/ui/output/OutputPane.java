@@ -9,11 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
@@ -30,7 +32,7 @@ import jg.aquifer.ui.io.UIPrinter;
  * will display this pane. This class holds the logic regarding
  * that pane's design, layout and triggers.
  */
-public class OutputPane extends Pane implements OutputConstants {
+public class OutputPane extends AnchorPane implements OutputConstants {
   private static final Logger LOG = LoggerFactory.getLogger(OutputPane.class);
 
   private final Pane headerPane;
@@ -46,6 +48,10 @@ public class OutputPane extends Pane implements OutputConstants {
   private IO applyLayout() throws IOException {
     final VBox mainContentVBox = new VBox();
     mainContentVBox.setId(CONTENT_PANE);
+    AnchorPane.setBottomAnchor(mainContentVBox, 0.0);
+    AnchorPane.setTopAnchor(mainContentVBox, 0.0);
+    AnchorPane.setLeftAnchor(mainContentVBox, 0.0);
+    AnchorPane.setRightAnchor(mainContentVBox, 0.0);
 
     //Our "content pane"
     getChildren().add(mainContentVBox);
@@ -69,11 +75,17 @@ public class OutputPane extends Pane implements OutputConstants {
 
     //Create the pane for displaying program output
     final AnchorPane outputPane = createOutputPane(outputArea);
-    mainContentVBox.getChildren().add(outputPane);
+    //mainContentVBox.getChildren().add(outputPane);
 
     //Create the pane for program input
     final AnchorPane inputPane = createInputPane(inputArea);
-    mainContentVBox.getChildren().add(inputPane);
+    //mainContentVBox.getChildren().add(inputPane);
+
+    final SplitPane splitPane = new SplitPane(outputPane, inputPane);
+    splitPane.setId(SPLIT_PANE);
+    splitPane.setOrientation(Orientation.VERTICAL);
+    splitPane.setDividerPosition(0, .75);
+    mainContentVBox.getChildren().add(splitPane);
 
     //The code below will be laying out the footer.
 

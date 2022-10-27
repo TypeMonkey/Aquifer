@@ -83,8 +83,7 @@ public class Main extends Application {
                 
                 }).start();
             }
-        });
-        
+        });        
         generator.initialize();
         generator.show();
         
