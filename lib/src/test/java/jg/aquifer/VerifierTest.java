@@ -10,52 +10,141 @@ import jg.aquifer.commands.options.VerificationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Random;
+
 public class VerifierTest {
 
-    @Test 
-    public void testNegWhole() {
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NEG_WHOLE.verify(null, null, "0");}, 
-                     "Expected a negative whole number");
+  final static Random randGen = new Random();
 
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NEG_WHOLE.verify(null, null, "1");}, 
-                     "Expected a negative whole number");
+  @Test 
+  public void testNegWhole() {
+    assertThrows(VerificationException.class, 
+                () -> {Verifier.NEG_WHOLE.verify(null, null, "0");}, 
+                "Expected a negative whole number");
 
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NEG_WHOLE.verify(null, null, "-531.555");}, 
-                     "Expected a negative whole number");
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NEG_WHOLE.verify(null, null, "1");}, 
+                  "Expected a negative whole number");
 
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NEG_WHOLE.verify(null, null, "-531.0");}, 
-                     "Expected a negative whole number");
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NEG_WHOLE.verify(null, null, "-531.555");}, 
+                  "Expected a negative whole number");
 
-        assertDoesNotThrow(() -> {Verifier.NEG_WHOLE.verify(null, null, "-15");}, 
-                     "Expected a negative whole number");
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NEG_WHOLE.verify(null, null, "-531.0");}, 
+                  "Expected a negative whole number");
+
+    assertDoesNotThrow(() -> {Verifier.NEG_WHOLE.verify(null, null, "-15");}, 
+                  "Expected a negative whole number");
+  }
+
+  @Test
+  public void testNonNegWhole() {
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "-95854");}, 
+                  "Expected a negative whole number");
+
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "-1");}, 
+                  "Expected a negative whole number");
+
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "531.555");}, 
+                  "Expected a negative whole number");
+
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "531.0");}, 
+                  "Expected a negative whole number");
+
+    assertDoesNotThrow(() -> {Verifier.NON_NEG_WHOLE.verify(null, null, "45");}, 
+                  "Expected a negative whole number");
+
+    assertDoesNotThrow(() -> {Verifier.NON_NEG_WHOLE.verify(null, null, "0");}, 
+                  "Expected a negative whole number");
+  }
+
+  @Test
+  public void testWholeNum() {
+    for (int i = -100; i <= 100; i++) {
+      final int sample = i;
+      assertDoesNotThrow(() -> {Verifier.WHOLE_NUM.verify(null, null, String.valueOf(sample));}, 
+                  "Expected a whole number");
+    }
+  }
+
+  @Test
+  public void testNegDec() {
+    assertThrows(VerificationException.class, 
+                  () -> {Verifier.NEG_DEC.verify(null, null, "0.0");}, 
+                  "Expected a negative decimal number");
+
+    for (int i = 0; i < 100; i++) {
+      double random = -Math.random() * 10;
+      assertDoesNotThrow(() -> {Verifier.NEG_DEC.verify(null, null, String.valueOf(random));}, 
+                  "Expected a negative decimal number");
     }
 
-    @Test
-    public void testNonNegWhole() {
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "-95854");}, 
-                     "Expected a negative whole number");
-
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "-1");}, 
-                     "Expected a negative whole number");
-
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "531.555");}, 
-                     "Expected a negative whole number");
-
-        assertThrows(VerificationException.class, 
-                     () -> {Verifier.NON_NEG_WHOLE.verify(null, null, "531.0");}, 
-                     "Expected a negative whole number");
-
-        assertDoesNotThrow(() -> {Verifier.NON_NEG_WHOLE.verify(null, null, "45");}, 
-                     "Expected a negative whole number");
-
-        assertDoesNotThrow(() -> {Verifier.NON_NEG_WHOLE.verify(null, null, "0");}, 
-                     "Expected a negative whole number");
+    for (int i = 0; i < 100; i++) {
+      double random = Math.random() * 10;
+      assertThrows(VerificationException.class,
+                   () -> {Verifier.NEG_DEC.verify(null, null, String.valueOf(random));}, 
+          "Expected a negative decimal number");
     }
+  }
+
+  @Test
+  public void testNonNegDec() {
+    assertDoesNotThrow(() -> {Verifier.NON_NEG_DEC.verify(null, null, "0.0");}, 
+              "Expected a non-negative decimal number");
+
+    for (int i = 0; i < 100; i++) {
+      double random = -Math.random() * 10;
+      assertThrows(VerificationException.class,
+                   () -> {Verifier.NON_NEG_DEC.verify(null, null, String.valueOf(random));}, 
+                   "Expected a non-negative decimal number");
+    }
+
+    for (int i = 0; i < 100; i++) {
+      double random = Math.random() * 10;
+      assertDoesNotThrow(() -> {Verifier.NON_NEG_DEC.verify(null, null, String.valueOf(random));}, 
+                "Expected a non-negative decimal number");
+    }
+  }
+
+  @Test
+  public void testDecNum() {
+    for (int i = 0; i < 100; i++) {
+      double rand = Math.random() * 10;
+      final double target = randGen.nextBoolean() ? -rand : rand;
+
+      assertDoesNotThrow(() -> {Verifier.DEC_NUM.verify(null, null, String.valueOf(target));}, 
+                 "Expected a decimal number");
+    }
+
+    assertDoesNotThrow(() -> {Verifier.DEC_NUM.verify(null, null, "0.0");}, 
+                 "Expected a decimal number");
+  }
+
+  @Test
+  public void testBool() {
+    assertThrows(VerificationException.class,
+                 () -> {Verifier.BOOL.verify(null, null, "yo, not true");}, 
+                 "Expected a boolean value");
+
+    assertThrows(VerificationException.class,
+                 () -> {Verifier.BOOL.verify(null, null, "no");}, 
+                 "Expected a boolean value");
+
+    assertDoesNotThrow(() -> {Verifier.BOOL.verify(null, null, "falSE");}, 
+                 "Expected a boolean value");
+
+    assertDoesNotThrow(() -> {Verifier.BOOL.verify(null, null, "False");}, 
+                 "Expected a boolean value");
+
+    assertDoesNotThrow(() -> {Verifier.BOOL.verify(null, null, "True");}, 
+                 "Expected a boolean value");
+
+    assertDoesNotThrow(() -> {Verifier.BOOL.verify(null, null, "TRUe");}, 
+                 "Expected a boolean value");
+  }
 }

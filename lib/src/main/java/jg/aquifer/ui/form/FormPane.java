@@ -1,5 +1,6 @@
 package jg.aquifer.ui.form;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -22,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
@@ -169,7 +172,6 @@ public class FormPane extends AnchorPane implements FormConstants {
      */
     final VBox paneVBox = new VBox();
     paneVBox.setId(TAB_ID+TAB_CONTENT_SUFFIX);
-
     paneVBox.setPrefHeight(300);
     paneVBox.setAlignment(Pos.CENTER);
     
@@ -229,7 +231,7 @@ public class FormPane extends AnchorPane implements FormConstants {
                                                      subcommand, 
                                                      subcommandForm, 
                                                      requiredOpts);
-    paneVBox.getChildren().add(requiredPane);
+    //paneVBox.getChildren().add(requiredPane);
 
     //Optional options ListView
     final TitledPane optionalPane = createOptListing("Optional Parameters",
@@ -239,7 +241,7 @@ public class FormPane extends AnchorPane implements FormConstants {
                                                      subcommand, 
                                                      subcommandForm, 
                                                      optionalOpts);
-    paneVBox.getChildren().add(optionalPane);
+    //paneVBox.getChildren().add(optionalPane);
 
     //Optional options ListView
     final TitledPane flagPane = createOptListing("Flag",
@@ -249,7 +251,38 @@ public class FormPane extends AnchorPane implements FormConstants {
                                                  subcommand, 
                                                  subcommandForm, 
                                                  flagOpts);
-    paneVBox.getChildren().add(flagPane);
+
+    final double [] DIVIDER_POS = {.30, .63};
+
+    final SplitPane optionsCategoryPane = new SplitPane(requiredPane, optionalPane, flagPane);
+    optionsCategoryPane.setId(TAB_ID+SPLIT_PANE_SUFFIX);
+    optionsCategoryPane.setOrientation(Orientation.VERTICAL);
+    optionsCategoryPane.setDividerPositions(DIVIDER_POS);
+    
+    /*
+    optionsCategoryPane.getDividers().get(0).positionProperty().addListener((e, oldV, newV) -> {
+      DIVIDER_POS[0] = newV.doubleValue();
+      LOG.info("divider 0: "+DIVIDER_POS[0]+" | "+newV);
+    });
+
+    optionsCategoryPane.getDividers().get(1).positionProperty().addListener((e, oldV, newV) -> {
+      DIVIDER_POS[1] = newV.doubleValue();
+      LOG.info("divider 1: "+DIVIDER_POS[1]+" | "+newV);
+    });
+    */
+
+    final ChangeListener<Boolean> paneCollapsListener = (e, oldVal, newVal) -> {
+      if (newVal) {
+        LOG.info(" -- DIVIDER POSES: "+Arrays.toString(DIVIDER_POS));
+        optionsCategoryPane.setDividerPositions(DIVIDER_POS);
+      }
+    };
+
+    requiredPane.expandedProperty().addListener(paneCollapsListener);
+    optionalPane.expandedProperty().addListener(paneCollapsListener);
+    flagPane.expandedProperty().addListener(paneCollapsListener);
+
+    paneVBox.getChildren().add(optionsCategoryPane);
 
     /*
      * This pane is needed in the case that all three
@@ -316,9 +349,11 @@ public class FormPane extends AnchorPane implements FormConstants {
     //Required options TitledPane
     final TitledPane requiredArgs = new TitledPane(tabTitle, titledPaneContent);
     requiredArgs.setId(tabID+paneSuffix);
+    requiredArgs.setAnimated(false);
 
     //paneVBox.getChildren().add(requiredArgs);
     requiredArgs.setCollapsible(true);
+    requiredArgs.setExpanded(true);
     VBox.setVgrow(requiredArgs, Priority.ALWAYS);
     VBox.setVgrow(requiredArgsFlow, Priority.ALWAYS);
     

@@ -2,6 +2,8 @@ package jg.sample;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -12,12 +14,17 @@ import jg.aquifer.Intake;
 import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
+import jg.aquifer.commands.options.ExclusiveOptions;
 import jg.aquifer.commands.options.FileOption;
 import jg.aquifer.commands.options.Flag;
 import jg.aquifer.commands.options.Option;
 import jg.aquifer.commands.options.RadioOption;
+import jg.aquifer.ui.Editor;
 import jg.aquifer.ui.Visualizer;
+import jg.aquifer.ui.form.FormConstants;
+import jg.aquifer.ui.form.FormPane;
 import jg.aquifer.ui.io.IO;
+import jg.aquifer.ui.output.OutputPane;
 
 public class Main extends Application {
 
@@ -37,6 +44,18 @@ public class Main extends Application {
 
         program.setIcon(new Image(Main.class.getClassLoader().getResourceAsStream("sample_icon.png")));
         
+        Option [] exs = {
+          new Option("ex1", "some exclusive option 1"),
+          new Option("ex2", "some exclusive option 2"), 
+          new RadioOption("ex3", "some exclusive option 2", false, "choice1", "choice2", "choice3"),
+        };
+
+        ExclusiveOptions exclusiveOptions = new ExclusiveOptions("SampExclusive", 
+                                                                "Set of exclusive options", 
+                                                                new HashSet<>(Arrays.asList(exs)), 
+                                                                false);
+        program.addProgramOption(exclusiveOptions);
+
         program.addProgramOption(new Option("add", "Adds files in the current directory"));
         program.addProgramOption(new Option("commit", "Commits files in the current directory"));
         program.addProgramOption(new Option("push", "Pushes files in the current directory"));
@@ -84,7 +103,18 @@ public class Main extends Application {
                 }).start();
             }
         });        
-        generator.initialize();
+
+        Editor editor = new Editor() {
+
+          @Override
+          public void edit(FormPane formPane, OutputPane outputPane) {
+            System.out.println("STATUS "+(FormConstants.HEADER_PANE_FUNC.apply(formPane).getId().equals(FormConstants.HEADER_PANE)));
+          }
+          
+        };
+
+        generator.initialize(editor);
+
         generator.show();
         
         /*

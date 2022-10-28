@@ -105,7 +105,7 @@ public interface Verifier {
   };
   
   /**
-   * Accepts only boolean values - strictly 'true' and 'false'
+   * Accepts only boolean values - strictly 'true' and 'false' (case-insensitive)
    */
   public static final Verifier BOOL = (op, form, arg) -> {
     if(!arg.trim().equalsIgnoreCase("true") && !arg.trim().equalsIgnoreCase("false")) {

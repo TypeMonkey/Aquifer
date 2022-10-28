@@ -50,6 +50,8 @@ public class Visualizer {
   private final Stage content;
   private Scene optionsScene;
   private Scene outputScene;
+  private FormPane formPane;
+  private OutputPane outputPane;
   private IO io;
   
   private volatile boolean isShowing;
@@ -89,13 +91,13 @@ public class Visualizer {
     if (!isInitialized) {
       final Pane header = generateHeader();
 
-      FormPane contentPane = new FormPane(generateHeader(),
+      formPane = new FormPane(generateHeader(),
                                       program, 
                                       () -> close(), 
                                       (f) -> callIntake(f));
-      optionsScene = new Scene(contentPane);
+      optionsScene = new Scene(formPane);
       
-      OutputPane outputPane = new OutputPane(header, () -> close());
+      outputPane = new OutputPane(header, () -> close());
       outputScene = new Scene(outputPane);   
 
       io = outputPane.getStreams();
@@ -105,7 +107,7 @@ public class Visualizer {
        * the created FormPane and OutputPane
        */
       if (editor != null) {
-        editor.edit(contentPane, outputPane);
+        editor.edit(formPane, outputPane);
       }
             
       isInitialized = true;
@@ -268,6 +270,14 @@ public class Visualizer {
   }
   
   public boolean isInitialized() {
-    return content != null;
+    return isInitialized;
+  }
+
+  public FormPane getFormPane() {
+    return formPane;
+  }
+
+  public OutputPane getOutputPane() {
+    return outputPane;
   }
 }
