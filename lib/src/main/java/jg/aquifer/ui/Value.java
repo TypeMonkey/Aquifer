@@ -1,11 +1,16 @@
 package jg.aquifer.ui;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableStringValue;
+
 /**
  * Wrapper class for an argument to an Option
  * 
  * @author Jose
  */
-public class Value {
+public class Value implements ObservableObjectValue<Value> {
   
   private String value;
   private boolean verified;
@@ -67,5 +72,30 @@ public class Value {
   @Override
   public String toString() {
     return "|"+value+"|  isVerified? "+verified;
+  }
+
+  @Override
+  public String get() {
+    return null;
+  }
+
+  @Override
+  public void addListener(ChangeListener<? super String> listener) {
+    
+  }
+
+  @Override
+  public void removeListener(ChangeListener<? super String> listener) {
+    
+  }
+
+  @Override
+  public void addListener(InvalidationListener listener) {
+    
+  }
+
+  @Override
+  public void removeListener(InvalidationListener listener) {
+    
   }
 }

@@ -11,8 +11,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import jg.aquifer.ui.form.FormConstants;
 
 /**
  * Each important Node in OutputPane has
@@ -26,31 +24,26 @@ public interface OutputConstants {
    * ID of the Pane that represents the header of OutputPane
    */
   public static final String HEADER_PANE = "headerPane";
-  public static final Function<Node, Pane> HEADER_PANE_FUNC = FormConstants.HEADER_PANE_FUNC;
+  public static final Function<OutputPane, Pane> HEADER_PANE_FUNC = (node) -> {
+    return (Pane) node.lookup("#"+HEADER_PANE);
+  };
 
   /**
    * ID of the VBox that holds the output and input text areas
    */
   public static final String CONTENT_PANE = "contentPane";
-  public static final Function<Node, VBox> CONTENT_PANE_FUNC = (node) -> {
+  public static final Function<OutputPane, VBox> CONTENT_PANE_FUNC = (node) -> {
     return (VBox) node.lookup("#"+CONTENT_PANE);
   };
 
   /**
-   * ID of the TextArea for program output
-   * 
-   * Note: this TextArea is contained in the SplitPane ID'd by
-   *       SPLIT_PANE below
+   * ID of the SplitPane that controls the user-comamnded
+   * expansion of both the input and output panes.
    */
-  public static final String OUTPUT_AREA = "outputArea";
-
-  /**
-   * ID of the TextArea for input to the program
-   * 
-   * Note: this TextArea is contained in the SplitPane ID'd by
-   *         SPLIT_PANE below
-   */
-  public static final String INPUT_AREA = "inputArea";
+  public static final String SPLIT_PANE = "splitPane";
+  public static final Function<OutputPane, SplitPane> SPLIT_PANE_FUNC = (node) -> {
+    return (SplitPane) node.lookup("#"+SPLIT_PANE);
+  };
 
   /**
    * ID of the AnchorPane that holds the output TextArea ScrollPane
@@ -59,14 +52,19 @@ public interface OutputConstants {
    *       SPLIT_PANE below
    */
   public static final String OUTPUT_PANE = "outputPane";
+  public static final Function<OutputPane, AnchorPane> OUTPUT_PANE_FUNC = (node) -> {
+    return (AnchorPane) SPLIT_PANE_FUNC.apply(node).getItems().get(0);
+  };
 
   /**
-   * ID of the SplitPane that controls the user-comamnded
-   * expansion of both the input and output panes.
+   * ID of the AnchorPane that holds the input TextArea ScrollPane
+   * 
+   * Note: this TextArea is contained in the SplitPane ID'd by
+   *       SPLIT_PANE below
    */
-  public static final String SPLIT_PANE = "splitPane";
-  public static final Function<Node, SplitPane> SPLIT_PANE_FUNC = (node) -> {
-    return (SplitPane) node.lookup("#"+SPLIT_PANE);
+  public static final String INPUT_PANE = "inputPane";
+  public static final Function<OutputPane, AnchorPane> INPUT_PANE_FUNC = (node) -> {
+    return (AnchorPane) SPLIT_PANE_FUNC.apply(node).getItems().get(1);
   };
 
   /**
@@ -76,14 +74,9 @@ public interface OutputConstants {
    *       SPLIT_PANE below
    */
   public static final String OUTPUT_SCROLL_PANE = "outputScrollPane";
-
-  /**
-   * ID of the AnchorPane that holds the input TextArea ScrollPane
-   * 
-   * Note: this TextArea is contained in the SplitPane ID'd by
-   *       SPLIT_PANE below
-   */
-  public static final String INPUT_PANE = "inputPane";
+  public static final Function<OutputPane, ScrollPane> OUTPUT_SCROLL_PANE_FUNC = (node) -> {
+    return (ScrollPane) OUTPUT_PANE_FUNC.apply(node).lookup("#"+OUTPUT_SCROLL_PANE);
+  };
 
   /**
    * ID of the AnchorPane that holds the input ScrollPane
@@ -92,6 +85,31 @@ public interface OutputConstants {
    *       SPLIT_PANE below
    */
   public static final String INPUT_SCROLL_PANE = "inputScrollPane";
+  public static final Function<OutputPane, ScrollPane> INPUT_SCROLL_PANE_FUNC = (node) -> {
+    return (ScrollPane) INPUT_PANE_FUNC.apply(node).lookup("#"+INPUT_SCROLL_PANE);
+  };
+
+  /**
+   * ID of the TextArea for program output
+   * 
+   * Note: this TextArea is contained in the SplitPane ID'd by
+   *       SPLIT_PANE below
+   */
+  public static final String OUTPUT_AREA = "outputArea";
+  public static final Function<OutputPane, TextArea> OUTPUT_AREA_FUNC = (node) -> {
+    return (TextArea) OUTPUT_SCROLL_PANE_FUNC.apply(node).getContent();
+  };
+
+  /**
+   * ID of the TextArea for input to the program
+   * 
+   * Note: this TextArea is contained in the SplitPane ID'd by
+   *         SPLIT_PANE below
+   */
+  public static final String INPUT_AREA = "inputArea";
+  public static final Function<OutputPane, TextArea> INPUT_AREA_FUNC = (node) -> {
+    return (TextArea) INPUT_SCROLL_PANE_FUNC.apply(node).getContent();
+  };
 
   /**
    * ID of the HBox that represents the footer section of the OutputPane

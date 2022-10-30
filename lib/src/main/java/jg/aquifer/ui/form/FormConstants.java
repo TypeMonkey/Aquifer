@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -23,7 +22,7 @@ public interface FormConstants {
    * ID of the Pane that represents the header of FormPane
    */
   public static final String HEADER_PANE = "headerPane";
-  public static final Function<Node, Pane> HEADER_PANE_FUNC = (node) -> {
+  public static final Function<FormPane, Pane> HEADER_PANE_FUNC = (node) -> {
     return (Pane) node.lookup("#"+HEADER_PANE);
   };
    
@@ -32,7 +31,7 @@ public interface FormConstants {
    * of all components on FormPane
    */
   public static final String CONTENT_PANE = "contentPane";
-  public static final Function<Node, StackPane> CONTENT_PANE_FUNC = (node) -> {
+  public static final Function<FormPane, StackPane> CONTENT_PANE_FUNC = (node) -> {
     return (StackPane) node.lookup("#"+CONTENT_PANE);
   };
 
@@ -41,7 +40,7 @@ public interface FormConstants {
    * sections of FormPane
    */
   public static final String CONTENT_VBOX = "contentVBox";
-  public static final Function<Node, VBox> CONTENT_VBOX_FUNC = (node) -> {
+  public static final Function<FormPane, VBox> CONTENT_VBOX_FUNC = (node) -> {
     return (VBox) node.lookup("#"+CONTENT_VBOX);
   };
 
@@ -50,7 +49,7 @@ public interface FormConstants {
    * the FormPane's footer
    */
   public static final String FOOTER = "footerHBox";
-  public static final Function<Node, HBox> FOOTER_FUNC = (node) -> {
+  public static final Function<FormPane, HBox> FOOTER_FUNC = (node) -> {
     return (HBox) node.lookup("#"+FOOTER);
   };
 
@@ -58,7 +57,7 @@ public interface FormConstants {
    * ID of the "Run" Button
    */
   public static final String RUN_BUTTON = "runButton";
-  public static final Function<Node, Button> RUN_BUTTON_FUNC = (node) -> {
+  public static final Function<FormPane, Button> RUN_BUTTON_FUNC = (node) -> {
     return (Button) node.lookup("#"+RUN_BUTTON);
   };
 
@@ -66,7 +65,7 @@ public interface FormConstants {
    * ID of the "Cancel" Button
    */
   public static final String CANCEL_BUTTON = "cancelButton";
-  public static final Function<Node, Button> CANCEL_BUTTON_FUNC = (node) -> {
+  public static final Function<FormPane, Button> CANCEL_BUTTON_FUNC = (node) -> {
     return (Button) node.lookup("#"+CANCEL_BUTTON);
   };
 
@@ -74,7 +73,7 @@ public interface FormConstants {
    * ID of the TabPane that holds all subcommand Tabs
    */
   public static final String TAB_PANE = "tabbedPane";
-  public static final Function<Node, TabPane> TAB_PANE_FUNC = (node) -> {
+  public static final Function<FormPane, TabPane> TAB_PANE_FUNC = (node) -> {
     return (TabPane) node.lookup("#"+TAB_PANE);
   };
 

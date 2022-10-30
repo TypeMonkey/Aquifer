@@ -102,26 +102,26 @@ public class UIConstantsTest extends Application {
     assertInstanceOf(VBox.class, OutputConstants.CONTENT_PANE_FUNC.apply(outputPane));
     assertEquals(OutputConstants.CONTENT_PANE, OutputConstants.CONTENT_PANE_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(TextArea.class, OutputConstants.OUTPUT_AREA_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.OUTPUT_AREA, OutputConstants.OUTPUT_AREA_FUNC.apply(outputPane).getId());
+    assertInstanceOf(TextArea.class, OutputConstants.OUTPUT_AREA_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.OUTPUT_AREA, OutputConstants.OUTPUT_AREA_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(TextArea.class, OutputConstants.INPUT_AREA_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.INPUT_AREA, OutputConstants.INPUT_AREA_FUNC.apply(outputPane).getId());
+    assertInstanceOf(TextArea.class, OutputConstants.INPUT_AREA_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.INPUT_AREA, OutputConstants.INPUT_AREA_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(AnchorPane.class, OutputConstants.OUTPUT_PANE_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.OUTPUT_PANE, OutputConstants.OUTPUT_PANE_FUNC.apply(outputPane).getId());
+    assertInstanceOf(AnchorPane.class, OutputConstants.OUTPUT_PANE_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.OUTPUT_PANE, OutputConstants.OUTPUT_PANE_FUNC.apply(outputPane).getId());
 
     assertInstanceOf(SplitPane.class, OutputConstants.SPLIT_PANE_FUNC.apply(outputPane));
     assertEquals(OutputConstants.SPLIT_PANE, OutputConstants.SPLIT_PANE_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(ScrollPane.class, OutputConstants.OUTPUT_SCROLL_PANE_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.OUTPUT_SCROLL_PANE, OutputConstants.OUTPUT_SCROLL_PANE_FUNC.apply(outputPane).getId());
+    assertInstanceOf(ScrollPane.class, OutputConstants.OUTPUT_SCROLL_PANE_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.OUTPUT_SCROLL_PANE, OutputConstants.OUTPUT_SCROLL_PANE_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(TextArea.class, OutputConstants.INPUT_PANE_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.INPUT_PANE, OutputConstants.INPUT_PANE_FUNC.apply(outputPane).getId());
+    assertInstanceOf(AnchorPane.class, OutputConstants.INPUT_PANE_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.INPUT_PANE, OutputConstants.INPUT_PANE_FUNC.apply(outputPane).getId());
 
-    //assertInstanceOf(ScrollPane.class, OutputConstants.INPUT_SCROLL_PANE_FUNC.apply(outputPane));
-    //assertEquals(OutputConstants.INPUT_SCROLL_PANE, OutputConstants.INPUT_SCROLL_PANE_FUNC.apply(outputPane).getId());
+    assertInstanceOf(ScrollPane.class, OutputConstants.INPUT_SCROLL_PANE_FUNC.apply(outputPane));
+    assertEquals(OutputConstants.INPUT_SCROLL_PANE, OutputConstants.INPUT_SCROLL_PANE_FUNC.apply(outputPane).getId());
 
     assertInstanceOf(HBox.class, OutputConstants.FOOTER_FUNC.apply(outputPane));
     assertEquals(OutputConstants.FOOTER, OutputConstants.FOOTER_FUNC.apply(outputPane).getId());
