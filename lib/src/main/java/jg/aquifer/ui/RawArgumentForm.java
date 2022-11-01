@@ -3,6 +3,8 @@ package jg.aquifer.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Option;
 
@@ -10,10 +12,10 @@ import jg.aquifer.commands.options.Option;
  * Houses the supplied arguments to a Subcommand.
  * @author Jose Guaro
  */
-public class RawArgumentForm {
+public class RawArgumentForm implements ChangeListener<ValueStatus> {
   
   private Subcommand subcommand;
-  private Map<Option, Value> rawArguments;
+  private Map<Option, ValueStatus> rawArguments;
 
   /**
    * Constructs an empty RawArgumentForm
@@ -29,7 +31,7 @@ public class RawArgumentForm {
    * @param option - an Option
    * @param newValue - a Value
    */
-  public void setOptionArgument(Option option, Value newValue) {
+  public void setOptionArgument(Option option, ValueStatus newValue) {
     rawArguments.put(option, newValue);
   }
   
@@ -39,7 +41,7 @@ public class RawArgumentForm {
    * @return the associated Value, 
    *         or null if the given Option hasn't been set on this RawArgumentForm
    */
-  public Value getOptionArgument(Option option) {
+  public ValueStatus getOptionArgument(Option option) {
     return rawArguments.get(option);
   }
   
@@ -53,11 +55,11 @@ public class RawArgumentForm {
     return rawArguments.containsKey(option);
   }
   
-  public Map<Option, Value> getSubcommandOptions(){
+  public Map<Option, ValueStatus> getSubcommandOptions(){
     return rawArguments;
   }
   
-  public Map<Option, Value> getRawArguments() {
+  public Map<Option, ValueStatus> getRawArguments() {
     return rawArguments;
   }
   
@@ -68,5 +70,10 @@ public class RawArgumentForm {
   @Override
   public String toString() {
     return "Subcommand: "+subcommand.getName()+" | "+rawArguments.toString();
+  }
+
+  @Override
+  public void changed(ObservableValue<? extends ValueStatus> observable, ValueStatus oldValue, ValueStatus newValue) {
+    rawArguments.put(newValue.getOption(), newValue);
   }
 }

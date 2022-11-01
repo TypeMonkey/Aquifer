@@ -21,6 +21,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
+import jg.aquifer.ui.ValueStatus;
 
 /**
  * A FileOption is a light extension of Option that
@@ -101,14 +102,12 @@ public class FileOption extends Option {
     final Label exceptionLabel = new Label();
     exceptionLabel.setTextFill(Color.RED);
     
-    argEntry.textProperty().addListener((observable, oldValue, newValue) -> { 
-      argumentForm.setOptionArgument(this, getHolder());
-      
+    argEntry.textProperty().addListener((observable, oldValue, newValue) -> {       
       if (!newValue.isEmpty()) {
         try {
           getVerifier().verify(this, argumentForm, newValue);
           exceptionLabel.setText("");
-          getHolder().setValue(newValue).verify();
+          setValue(newValue);
           mainCellLayout.getChildren().remove(exceptionLabel);
         } catch (VerificationException e) {
           if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
@@ -116,8 +115,11 @@ public class FileOption extends Option {
             mainCellLayout.getChildren().add(exceptionLabel);
           }
           
-          getHolder().unverify();
+          setValue(newValue, e);
         }
+      }
+      else {
+        setValue(newValue, new VerificationException("Can't be empty!"));
       }
     });
     entryCellHBox.getChildren().add(argEntry);

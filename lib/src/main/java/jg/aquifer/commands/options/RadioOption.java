@@ -82,14 +82,14 @@ public class RadioOption extends Option {
         try {
           getVerifier().verify(currentOption, argumentForm, selectedValue);
           exceptionLabel.setText("");
-          getHolder().setValue(selectedValue).verify();
+          setValue(selectedValue);
         } catch (VerificationException e) {
           if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
             exceptionLabel.setText(e.getMessage());
             mainCellLayout.getChildren().add(exceptionLabel);
           }
           
-          getHolder().unverify();
+          setValue(selectedValue, e);
         }   
       }
     });    

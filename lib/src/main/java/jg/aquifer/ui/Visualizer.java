@@ -175,7 +175,7 @@ public class Visualizer {
     final Map<String, String> args = new HashMap<>();
     final Set<String> givenRequiredOptions = new HashSet<>();
     
-    for (Entry<Option, Value> argVal: formToProcess.getRawArguments().entrySet()) {
+    for (Entry<Option, ValueStatus> argVal: formToProcess.getRawArguments().entrySet()) {
       
       LOG.info("--- processing: "+argVal.getKey()+" <-> "+argVal.getValue());
       

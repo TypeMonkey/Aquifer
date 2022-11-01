@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.ui.RawArgumentForm;
+import jg.aquifer.ui.ValueStatus;
 
 /**
  * A Flag is a non-required Option that has no arguments.
@@ -23,7 +24,12 @@ public class Flag extends Option {
   /**
    * The string used to signify that a Flag has been selected
    */
-  public static final String VALUE_PLACE_HOLDER = "selected";
+  public static final String FLAG_SELECTED_HOLDER = "selected";
+
+  /**
+   * The string used to signify that a Flag has been selected
+   */
+  public static final String FLAG_UNSELECTED_HOLDER = "unselected";
 
   /**
    * Constructs an optional Option with a passive Verifier (Verifier.STR_VERIFIER)
@@ -44,10 +50,10 @@ public class Flag extends Option {
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         if (newValue == Boolean.TRUE) {
-          getHolder().setValue(VALUE_PLACE_HOLDER).verify();
+          setValue(FLAG_SELECTED_HOLDER);
         }
         else {
-          getHolder().setValue(null).verify();
+          setValue(FLAG_UNSELECTED_HOLDER);
         }
       }
     });

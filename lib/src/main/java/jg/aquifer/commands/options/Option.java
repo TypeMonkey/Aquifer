@@ -1,5 +1,8 @@
 package jg.aquifer.commands.options;
 
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectPropertyBase;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -16,7 +19,7 @@ import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
-import jg.aquifer.ui.Value;
+import jg.aquifer.ui.ValueStatus;
 
 /**
  * An option is a named parameter to a Subcommand, which may or may not be required.
@@ -78,8 +81,8 @@ public class Option {
   private final String optName;
   private final String description;
   private final boolean isRequired;
-  private final Value holder;
   private final Verifier verifier;
+  protected final ReadOnlyObjectWrapper<ValueStatus> valueProperty;
   
   private Node display;
   
@@ -114,7 +117,8 @@ public class Option {
     this.description = description;   
     this.isRequired = isRequired;
     this.verifier = verifier;
-    this.holder = new Value();
+    //this.holder = new Value();
+    this.valueProperty = new ReadOnlyObjectWrapper<ValueStatus>();
   }
   
   @Override
@@ -174,14 +178,12 @@ public class Option {
     final Label exceptionLabel = new Label();
     exceptionLabel.setTextFill(Color.RED);
     
-    argEntry.textProperty().addListener((observable, oldValue, newValue) -> { 
-      argumentForm.setOptionArgument(this, holder);
-      
+    argEntry.textProperty().addListener((observable, oldValue, newValue) -> {       
       if (!newValue.isEmpty()) {
         try {
           verifier.verify(this, argumentForm, newValue);
           exceptionLabel.setText("");
-          holder.setValue(newValue).verify();
+          setValue(newValue);
           mainCellLayout.getChildren().remove(exceptionLabel);
         } catch (VerificationException e) {
           if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
@@ -189,8 +191,11 @@ public class Option {
             mainCellLayout.getChildren().add(exceptionLabel);
           }
           
-          holder.unverify();
+          setValue(newValue, e);
         }
+      }
+      else {
+        setValue(newValue, new VerificationException("Can't be empty!"));
       }
     });
     
@@ -202,9 +207,17 @@ public class Option {
     
     return mainCellLayout;
   }
+
+  protected void setValue(String value) {
+    setValue(value, null);
+  }
+
+  protected void setValue(String value, VerificationException e) {
+    valueProperty.set(new ValueStatus(this, value, e));
+  }
   
-  public Value getHolder() {
-    return holder;
+  public ReadOnlyObjectProperty<ValueStatus> valueProperty() {
+    return valueProperty.getReadOnlyProperty();
   }
   
   public String getOptName() {

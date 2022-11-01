@@ -198,7 +198,7 @@ public class FormPane extends AnchorPane implements FormConstants {
     for(Option option : subcommand.getOptions().values()) {      
       LOG.info(option.getOptName()+" | "+option.isRequired());
       
-      subcommandForm.setOptionArgument(option, option.getHolder());
+      option.valueProperty().addListener(subcommandForm);
       
       if (option instanceof Flag) {
         flagOpts.add((Flag) option);
