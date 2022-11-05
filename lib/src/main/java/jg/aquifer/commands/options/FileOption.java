@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -72,7 +73,7 @@ public class FileOption extends Option {
   }
 
   @Override
-  protected Node generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
+  protected Pane generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
     final VBox mainCellLayout = new VBox(5);
     
     final Text argumentName = new Text(getOptName());

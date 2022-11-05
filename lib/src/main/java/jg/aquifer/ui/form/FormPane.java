@@ -1,8 +1,10 @@
 package jg.aquifer.ui.form;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -23,18 +25,28 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.util.Callback;
@@ -42,6 +54,7 @@ import jg.aquifer.commands.Program;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Flag;
 import jg.aquifer.commands.options.Option;
+import jg.aquifer.common.NoSelectionModel;
 import jg.aquifer.ui.ArgumentCell;
 import jg.aquifer.ui.RawArgumentForm;
 
@@ -244,13 +257,13 @@ public class FormPane extends AnchorPane implements FormConstants {
     //paneVBox.getChildren().add(optionalPane);
 
     //Optional options ListView
-    final TitledPane flagPane = createOptListing("Flag",
-                                                 TAB_ID, 
-                                                 TAB_FLAG_LIST_SUFFIX, 
-                                                 TAB_FLAG_PANE_SUFFIX, 
-                                                 subcommand, 
-                                                 subcommandForm, 
-                                                 flagOpts);
+    final TitledPane flagPane = createFlagListing("Flag",
+                                                  TAB_ID, 
+                                                  TAB_FLAG_LIST_SUFFIX, 
+                                                  TAB_FLAG_PANE_SUFFIX, 
+                                                  subcommand, 
+                                                  subcommandForm, 
+                                                  flagOpts);
 
     final double [] DIVIDER_POS = {.30, .63};
 
@@ -314,16 +327,17 @@ public class FormPane extends AnchorPane implements FormConstants {
     return tab;
   }
 
-  private TitledPane createOptListing(String tabTitle,
-                                      String tabID, 
-                                      String listSuffix,
-                                      String paneSuffix,
-                                      Subcommand subcommand, 
-                                      RawArgumentForm form, 
-                                      Set<? extends Option> options) {
+  private TitledPane createFlagListing(String tabTitle,
+                                       String tabID, 
+                                       String listSuffix,
+                                       String paneSuffix,
+                                       Subcommand subcommand, 
+                                       RawArgumentForm form, 
+                                       Set<Flag> options) {
+    
     final ListView<Option> requiredArgsFlow = new ListView<>(FXCollections.observableArrayList(options));
+    requiredArgsFlow.setSelectionModel(new NoSelectionModel<>());
     requiredArgsFlow.setId(tabID+listSuffix);
-
     requiredArgsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
       @Override
       public ListCell<Option> call(ListView<Option> param) {
@@ -331,6 +345,7 @@ public class FormPane extends AnchorPane implements FormConstants {
         return new ArgumentCell(subcommand, form);
       }
     });
+    
 
     Node titledPaneContent = null;
     if (options.isEmpty()) {
@@ -355,7 +370,80 @@ public class FormPane extends AnchorPane implements FormConstants {
     requiredArgs.setCollapsible(true);
     requiredArgs.setExpanded(true);
     VBox.setVgrow(requiredArgs, Priority.ALWAYS);
-    VBox.setVgrow(requiredArgsFlow, Priority.ALWAYS);
+    //VBox.setVgrow(requiredArgsFlow, Priority.ALWAYS);
+    
+    return requiredArgs;
+  }
+
+  private TitledPane createOptListing(String tabTitle,
+                                      String tabID, 
+                                      String listSuffix,
+                                      String paneSuffix,
+                                      Subcommand subcommand, 
+                                      RawArgumentForm form, 
+                                      Set<? extends Option> options) {
+
+    final FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
+    flowPane.setHgap(5);
+    flowPane.setVgap(5);
+    flowPane.setPadding(new Insets(5,5,0,5));
+
+    for (Option opt : options) {
+      final Pane pane = opt.makeDisplay(form, subcommand);
+      pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+      pane.setPadding(new Insets(5,5,5,5));
+      pane.setBorder(new Border(new BorderStroke(Color.DARKGREY, 
+                                                 BorderStrokeStyle.SOLID, 
+                                                 new CornerRadii(.020, true), 
+                                                 new BorderWidths(1))));
+
+      flowPane.getChildren().addAll(pane);
+    }
+
+    final ScrollPane scrollPane = new ScrollPane(flowPane);
+    scrollPane.setFitToHeight(true);
+    scrollPane.setFitToWidth(true);
+    scrollPane.setPannable(true);
+
+    /*
+    final ListView<Option> requiredArgsFlow = new ListView<>(FXCollections.observableArrayList(options));
+    requiredArgsFlow.setSelectionModel(new NoSelectionModel<>());
+    requiredArgsFlow.setId(tabID+listSuffix);
+
+    requiredArgsFlow.setCellFactory(new Callback<ListView<Option>, ListCell<Option>>() {  
+      @Override
+      public ListCell<Option> call(ListView<Option> param) {
+        LOG.info("---returning new view");
+        return new ArgumentCell(subcommand, form);
+      }
+    });
+    */
+
+    Node titledPaneContent = null;
+    if (options.isEmpty()) {
+      final Label emptyLabel = new Label("No parameters listed!");
+      emptyLabel.setPrefHeight(250);
+
+      final StackPane emptyContentPane = new StackPane(emptyLabel);
+      VBox.setVgrow(emptyContentPane, Priority.ALWAYS);
+      emptyContentPane.setAlignment(Pos.CENTER);
+      titledPaneContent = emptyContentPane;
+    }
+    else {
+      //titledPaneContent = requiredArgsFlow;
+      titledPaneContent = scrollPane;
+    }
+    
+    //Required options TitledPane
+    final TitledPane requiredArgs = new TitledPane(tabTitle, titledPaneContent);
+    requiredArgs.setId(tabID+paneSuffix);
+    requiredArgs.setAnimated(false);
+
+    //paneVBox.getChildren().add(requiredArgs);
+    requiredArgs.setCollapsible(true);
+    requiredArgs.setExpanded(true);
+    VBox.setVgrow(requiredArgs, Priority.ALWAYS);
+    //VBox.setVgrow(requiredArgsFlow, Priority.ALWAYS);
     
     return requiredArgs;
   }

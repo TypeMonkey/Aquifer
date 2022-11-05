@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -84,7 +85,7 @@ public class Option {
   private final Verifier verifier;
   protected final ReadOnlyObjectWrapper<ValueStatus> valueProperty;
   
-  private Node display;
+  private Pane display;
   
   /**
    * Constructs an optional Option with a passive Verifier (Verifier.STR_VERIFIER)
@@ -134,7 +135,7 @@ public class Option {
     return optName.hashCode();
   }
   
-  public final Node makeDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
+  public final Pane makeDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
     if (display == null) {
       display = generateDisplay(argumentForm, subcommand);
     }
@@ -148,7 +149,7 @@ public class Option {
    * @param subcommand - the Subcommand this VerifiableOption belongs to.
    * @return the Node that holds the graphics for this VerifiableOption
    */
-  protected Node generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {    
+  protected Pane generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {    
     final VBox mainCellLayout = new VBox(5);
     
     final Text argumentName = new Text(optName);

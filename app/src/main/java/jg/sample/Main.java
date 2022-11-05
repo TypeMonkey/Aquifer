@@ -52,7 +52,7 @@ public class Main extends Application {
 
         ExclusiveOptions exclusiveOptions = new ExclusiveOptions("SampExclusive", 
                                                                 "Set of exclusive options", 
-                                                                new HashSet<>(Arrays.asList(exs)), 
+                                                                Arrays.asList(exs), 
                                                                 false);
         program.addProgramOption(exclusiveOptions);
 
@@ -64,7 +64,7 @@ public class Main extends Application {
         program.addProgramOption(new RadioOption("multiradio", "Multiple files in the current directory", true, "option1", "option2", "option3"));
         //program.addProgramOption(new FileOption("multi", "Multiple files in the current directory", true, Verifier.STR_VERIFIER, new File(System.getProperty("user.home"))));
         
-        program.addProgramOption(new Flag("allowDups", "Allows duplicate files"));
+        program.addProgramOption(new Flag("allowDups", "Allows duplicate files and something else"));
         program.addProgramOption(new Flag("flag2", "2Allows duplicate files"));
         program.addProgramOption(new Flag("flag3", "3Allows duplicate files"));
         program.addProgramOption(new Flag("flag4", "4Allows duplicate files"));

@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -41,7 +42,7 @@ public class Flag extends Option {
   }
 
   @Override
-  public Node generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
+  public Pane generateDisplay(RawArgumentForm argumentForm, Subcommand subcommand) {
     final HBox mainLayout = new HBox();
     mainLayout.setAlignment(Pos.CENTER_LEFT);
         
