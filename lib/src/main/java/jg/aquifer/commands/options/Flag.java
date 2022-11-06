@@ -47,17 +47,15 @@ public class Flag extends Option {
     mainLayout.setAlignment(Pos.CENTER_LEFT);
         
     final CheckBox checkBox = new CheckBox();
-    checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
         if (newValue == Boolean.TRUE) {
-          setValue(FLAG_SELECTED_HOLDER);
+          processArgument(FLAG_SELECTED_HOLDER, argumentForm, subcommand, EMPTY_RUNNABLE, EMPTY_EXC_CON);
         }
         else {
-          setValue(FLAG_UNSELECTED_HOLDER);
+          processArgument(FLAG_UNSELECTED_HOLDER, argumentForm, subcommand, EMPTY_RUNNABLE, EMPTY_EXC_CON);
         }
-      }
     });
+
     mainLayout.getChildren().add(checkBox);
     
     final Text argumentName = new Text(getOptName());

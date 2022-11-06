@@ -98,7 +98,7 @@ public class ExclusiveOptions extends Option {
     final ChangeListener<ValueStatus> changeListener = (o, oldValue, newValue) -> {
       try {
         getVerifier().verify(this, argumentForm, getDescription());
-        valueProperty.set(new ExclusiveValueStatus(this, newValue.getOption(), newValue.getValue(), newValue.getException()));
+        valueProperty.set(new ExclusiveValueStatus(this, newValue, newValue.getException()));
         mainCellLayout.getChildren().remove(exceptionLabel);
       } catch (VerificationException e) {
         if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
@@ -106,7 +106,7 @@ public class ExclusiveOptions extends Option {
           mainCellLayout.getChildren().add(exceptionLabel);
         }
         
-        valueProperty.set(new ExclusiveValueStatus(this, newValue.getOption(), newValue.getValue(), e));
+        valueProperty.set(new ExclusiveValueStatus(this, newValue, e));
       }     
     };
 
@@ -133,6 +133,6 @@ public class ExclusiveOptions extends Option {
   }
   
   public List<Option> getOptions() {
-      return options;
+    return options;
   }
 }

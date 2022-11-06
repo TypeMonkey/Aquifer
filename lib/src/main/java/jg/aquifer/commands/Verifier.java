@@ -16,8 +16,9 @@ import jg.aquifer.ui.RawArgumentForm;
  * the method verify() should throw a VerificationException with a concise message
  * detailing the Option's requirements.
  * 
- * This interface is meant to be used with VerifiableOption, with each VerifiableOption instance being
- * supplied with it's own Verifier.
+ * When making your own Verifier, it's important to make sure that all possible
+ * Exceptions that may be thrown by your logic is accounted for as the generated UI
+ * will not know how to properly react to exceptions other than a VerificationException
  * 
  * @author Jose Guaro
  */

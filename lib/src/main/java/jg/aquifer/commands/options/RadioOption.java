@@ -76,31 +76,20 @@ public class RadioOption extends Option {
       toggleButton.setToggleGroup(selectionGroup);      
       entryCellHBox.getChildren().add(toggleButton);
     }
-    
-    final Option currentOption = this;
-    
-    selectionGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-      
-      @Override
-      public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+        
+    selectionGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
         if (newValue != null) {
           //this radio option has a new value
           ToggleButton selectedButton = (ToggleButton) newValue;
           final String selectedValue = selectedButton.getText();
-          
-          try {
-            getVerifier().verify(currentOption, argumentForm, selectedValue);
-            setValue(selectedValue);
-          } catch (VerificationException e) {
-            //This should never be thrown as the Verifier of a RadioOption is Verifier.STR_VERIFIER
-          } 
+          processArgument(selectedValue, argumentForm, subcommand, EMPTY_RUNNABLE, EMPTY_EXC_CON);
         }
         else {
           //This radio option has been cleared
-          setValue(null);
+          processArgument(null, argumentForm, subcommand, EMPTY_RUNNABLE, EMPTY_EXC_CON);
         }  
       }
-    });    
+    );    
     
     mainCellLayout.getChildren().add(entryCellHBox);
     

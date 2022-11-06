@@ -1,5 +1,7 @@
 package jg.aquifer.commands.options;
 
+import java.util.function.Consumer;
+
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectPropertyBase;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -20,6 +22,7 @@ import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
+import jg.aquifer.ui.Wrapper;
 import jg.aquifer.ui.value.ValueStatus;
 
 /**
@@ -32,6 +35,16 @@ import jg.aquifer.ui.value.ValueStatus;
  * @author Jose
  */
 public class Option {  
+
+  /**
+   * A Runnable that does nothing
+   */
+  public static final Runnable EMPTY_RUNNABLE = () -> {};
+
+  /*
+   * A Consumer<VerificationException> that does nothing
+   */
+  public static final Consumer<VerificationException> EMPTY_EXC_CON = (e) -> {};
   
   /**
    * Convenient builder class for a regular Option.
@@ -163,15 +176,16 @@ public class Option {
     
     final HBox entryCellHBox = new HBox(5);
     final TextField argEntry = new TextField("Enter value");
+
+    final Wrapper<Boolean> justInitialized = new Wrapper<>(true);
     
-    argEntry.setOnMouseClicked(new EventHandler<Event>() {
-      private boolean justInitialized = true;
-      
+    argEntry.setOnMouseClicked(new EventHandler<Event>() {      
       @Override
       public void handle(Event event) {
-        if (justInitialized) {
+        if (justInitialized.get()) {
           argEntry.setText("");
-          justInitialized = false;
+          justInitialized.set(false);
+          event.consume();
         }
       }
     });
@@ -179,25 +193,20 @@ public class Option {
     final Label exceptionLabel = new Label();
     exceptionLabel.setTextFill(Color.RED);
     
-    argEntry.textProperty().addListener((observable, oldValue, newValue) -> {       
-      if (!newValue.isEmpty()) {
-        try {
-          verifier.verify(this, argumentForm, newValue);
-          exceptionLabel.setText("");
-          setValue(newValue);
-          mainCellLayout.getChildren().remove(exceptionLabel);
-        } catch (VerificationException e) {
-          if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
-            exceptionLabel.setText(e.getMessage());
-            mainCellLayout.getChildren().add(exceptionLabel);
-          }
-          
-          setValue(newValue, e);
-        }
-      }
-      else {
-        setValue(newValue, new VerificationException("Can't be empty!"));
-      }
+    argEntry.textProperty().addListener((observable, oldValue, newValue) -> { 
+      if (!justInitialized.get()) {
+        processArgument(newValue, argumentForm, subcommand, 
+                        () -> {
+                          exceptionLabel.setText("");
+                          mainCellLayout.getChildren().remove(exceptionLabel);
+                        },
+                        (e) -> {
+                          if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
+                            exceptionLabel.setText(e.getMessage());
+                            mainCellLayout.getChildren().add(exceptionLabel);
+                          }
+                        });
+      }  
     });
     
     entryCellHBox.getChildren().add(argEntry);
@@ -206,10 +215,57 @@ public class Option {
     return mainCellLayout;
   }
 
+  /**
+   * Processes the argument to this Option, handling cases such as when:
+   * - the Verifier throws a VerificationException
+   * - the argument is null, or empty
+   * 
+   * @param value - the String argument to process
+   * @param argumentForm - the RawArgumentForm the argument was supplied in
+   * @param subcommand - the host Subcommand of this Option
+   * @param success - the function to execute if verification was successful
+   * @param failure - the function to execute if verification failed (VerificationException failed)
+   */
+  protected void processArgument(String value, 
+                                 RawArgumentForm argumentForm, 
+                                 Subcommand subcommand, 
+                                 Runnable success, 
+                                 Consumer<VerificationException> failure) {
+    if(value == null){
+      final VerificationException exception = new VerificationException("Argument is null!");
+      failure.accept(exception);
+      setValue(value, exception);
+    }
+    else if(value.isEmpty()) {
+      final VerificationException exception = new VerificationException("Can't be empty!");
+      failure.accept(exception);
+      setValue(value, exception);
+    }
+    else {
+      try {
+        verifier.verify(this, argumentForm, value);
+        setValue(value);
+        success.run();
+      } catch (VerificationException e) {
+        setValue(value, e);
+        failure.accept(e);
+      }
+    }
+  }
+
+  /**
+   * Sets the ValueStatus (through valueProperty) with a new value and no VerificationException
+   * @param value - the new argument
+   */
   protected void setValue(String value) {
     setValue(value, null);
   }
 
+  /**
+   * Sets the ValueStatus (through valueProperty) with a new value and VerificationException
+   * @param value - the new argument
+   * @param e - the VerificationException to couple with the argument
+   */
   protected void setValue(String value, VerificationException e) {
     valueProperty.set(new ValueStatus(this, value, e));
   }

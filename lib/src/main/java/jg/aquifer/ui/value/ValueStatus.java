@@ -8,7 +8,12 @@ import jg.aquifer.commands.options.Option;
 import jg.aquifer.commands.options.VerificationException;
 
 /**
- * Wrapper class for an argument to an Option
+ * Wraps the argument for an Option and it's verified status
+ * 
+ * An argument to an Option is verified (isVerified() returns true), if:
+ * - The argument ISN'T null
+ * - The argument has been successfully verified by the 
+ *   Option's verifier (no VerificationException is thrown)
  * 
  * @author Jose
  */

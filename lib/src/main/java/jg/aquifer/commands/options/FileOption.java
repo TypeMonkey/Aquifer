@@ -22,6 +22,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
+import jg.aquifer.ui.Wrapper;
 import jg.aquifer.ui.value.ValueStatus;
 
 /**
@@ -87,15 +88,15 @@ public class FileOption extends Option {
     
     final HBox entryCellHBox = new HBox(5);
     final TextField argEntry = new TextField("Enter file path");
+
+    final Wrapper<Boolean> justInitialized = new Wrapper<>(true);
     
-    argEntry.setOnMouseClicked(new EventHandler<Event>() {
-      private boolean justInitialized = true;
-      
+    argEntry.setOnMouseClicked(new EventHandler<Event>() {      
       @Override
       public void handle(Event event) {
-        if (justInitialized) {
+        if (justInitialized.get()) {
           argEntry.setText("");
-          justInitialized = false;
+          justInitialized.set(false);
         }
       }
     });
@@ -103,24 +104,19 @@ public class FileOption extends Option {
     final Label exceptionLabel = new Label();
     exceptionLabel.setTextFill(Color.RED);
     
-    argEntry.textProperty().addListener((observable, oldValue, newValue) -> {       
-      if (!newValue.isEmpty()) {
-        try {
-          getVerifier().verify(this, argumentForm, newValue);
-          exceptionLabel.setText("");
-          setValue(newValue);
-          mainCellLayout.getChildren().remove(exceptionLabel);
-        } catch (VerificationException e) {
-          if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
-            exceptionLabel.setText(e.getMessage());
-            mainCellLayout.getChildren().add(exceptionLabel);
-          }
-          
-          setValue(newValue, e);
-        }
-      }
-      else {
-        setValue(newValue, new VerificationException("Can't be empty!"));
+    argEntry.textProperty().addListener((observable, oldValue, newValue) -> {
+      if (!justInitialized.get()) {
+        processArgument(newValue, argumentForm, subcommand, 
+                        () -> {
+                          exceptionLabel.setText("");
+                          mainCellLayout.getChildren().remove(exceptionLabel);
+                        }, 
+                        (e) -> {
+                          if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
+                            exceptionLabel.setText(e.getMessage());
+                            mainCellLayout.getChildren().add(exceptionLabel);
+                          }
+                        });
       }
     });
     entryCellHBox.getChildren().add(argEntry);
