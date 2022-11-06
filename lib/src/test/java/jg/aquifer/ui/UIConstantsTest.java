@@ -26,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -217,8 +218,9 @@ public class UIConstantsTest extends Application {
       final TitledPane requiredPane = (TitledPane) splitPane.getItems().get(0);
       assertEquals(TAB_ID+FormConstants.TAB_REQ_PANE_SUFFIX, requiredPane.getId());
       if (requiredOpts > 0) {
-        assertInstanceOf(ListView.class, requiredPane.getContent());
-        assertEquals(TAB_ID+FormConstants.TAB_REQ_LIST_SUFFIX, requiredPane.getContent().getId());
+        assertInstanceOf(ScrollPane.class, requiredPane.getContent());
+        assertInstanceOf(FlowPane.class, ((ScrollPane) requiredPane.getContent()).getContent());
+        assertEquals(TAB_ID+FormConstants.TAB_REQ_FPANE_SUFFIX, ((ScrollPane) requiredPane.getContent()).getContent().getId());
       }
       else {
         assertInstanceOf(StackPane.class, requiredPane.getContent());
@@ -230,8 +232,9 @@ public class UIConstantsTest extends Application {
       final TitledPane optionalPane = (TitledPane) splitPane.getItems().get(1);
       assertEquals(TAB_ID+FormConstants.TAB_OPT_PANE_SUFFIX, optionalPane.getId());
       if (optionalOpts > 0) {
-        assertInstanceOf(ListView.class, optionalPane.getContent());
-        assertEquals(TAB_ID+FormConstants.TAB_OPT_LIST_SUFFIX, optionalPane.getContent().getId());
+        assertInstanceOf(ScrollPane.class, optionalPane.getContent());
+        assertInstanceOf(FlowPane.class, ((ScrollPane) optionalPane.getContent()).getContent());
+        assertEquals(TAB_ID+FormConstants.TAB_OPT_FPANE_SUFFIX, ((ScrollPane) optionalPane.getContent()).getContent().getId());
       }
       else {
         assertInstanceOf(StackPane.class, optionalPane.getContent());

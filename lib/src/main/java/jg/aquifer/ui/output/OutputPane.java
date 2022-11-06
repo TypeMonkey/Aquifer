@@ -230,7 +230,6 @@ public class OutputPane extends AnchorPane implements OutputConstants {
 
       inputArea.setOnKeyPressed( (event) -> {
         if (event.getCode() == KeyCode.ENTER) {
-          System.out.println(inputArea.getCaretPosition());
           final String input = inputArea.getText();
           //Clear input area
           inputArea.clear();
@@ -239,7 +238,6 @@ public class OutputPane extends AnchorPane implements OutputConstants {
             try {
               //write to standard out too
               stdPrintOut.println(input);
-              System.out.println("----- TEXT: "+input);
               textAreaDestStream.write(input.getBytes());
             } catch (IOException e) {
               LOG.error("Fatal error: Writing to PipedOutputStream causes IOException", e);

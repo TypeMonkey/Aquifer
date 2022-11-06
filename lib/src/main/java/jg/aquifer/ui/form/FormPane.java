@@ -239,7 +239,7 @@ public class FormPane extends AnchorPane implements FormConstants {
     //Required options ListView
     final TitledPane requiredPane = createOptListing("Required Parameters",
                                                      TAB_ID, 
-                                                     TAB_REQ_LIST_SUFFIX, 
+                                                     TAB_REQ_FPANE_SUFFIX, 
                                                      TAB_REQ_PANE_SUFFIX, 
                                                      subcommand, 
                                                      subcommandForm, 
@@ -249,7 +249,7 @@ public class FormPane extends AnchorPane implements FormConstants {
     //Optional options ListView
     final TitledPane optionalPane = createOptListing("Optional Parameters",
                                                      TAB_ID, 
-                                                     TAB_OPT_LIST_SUFFIX, 
+                                                     TAB_OPT_FPANE_SUFFIX, 
                                                      TAB_OPT_PANE_SUFFIX, 
                                                      subcommand, 
                                                      subcommandForm, 
@@ -377,13 +377,14 @@ public class FormPane extends AnchorPane implements FormConstants {
 
   private TitledPane createOptListing(String tabTitle,
                                       String tabID, 
-                                      String listSuffix,
+                                      String flowPaneSuffix,
                                       String paneSuffix,
                                       Subcommand subcommand, 
                                       RawArgumentForm form, 
                                       Set<? extends Option> options) {
 
     final FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL);
+    flowPane.setId(tabID+flowPaneSuffix);
     flowPane.setHgap(5);
     flowPane.setVgap(5);
     flowPane.setPadding(new Insets(5,5,0,5));

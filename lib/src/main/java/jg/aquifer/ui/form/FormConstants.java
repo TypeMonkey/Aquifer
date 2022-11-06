@@ -121,7 +121,7 @@ public interface FormConstants {
    * "commitTabReqList", which corresponds to a ListView<Option>
    * which holds the corresponding Subcommand's required Options
    */
-  public static final String TAB_REQ_LIST_SUFFIX = "ReqList";
+  public static final String TAB_REQ_FPANE_SUFFIX = "ReqFPane";
 
   /**
    * Each Tab's ID is <subcommand name>Tab
@@ -133,7 +133,7 @@ public interface FormConstants {
    * "commitTabReqList", which corresponds to a ListView<Option>
    * which holds the corresponding Subcommand's optional/non-Flag Options
    */
-  public static final String TAB_OPT_LIST_SUFFIX = "OptList";
+  public static final String TAB_OPT_FPANE_SUFFIX = "OptFPane";
 
   /**
    * Each Tab's ID is <subcommand name>Tab
