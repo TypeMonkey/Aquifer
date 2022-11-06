@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.options.Option;
+import jg.aquifer.ui.value.ValueStatus;
 
 /**
  * Houses the supplied arguments to a Subcommand.

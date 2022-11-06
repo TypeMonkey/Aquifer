@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.ui.RawArgumentForm;
-import jg.aquifer.ui.ValueStatus;
+import jg.aquifer.ui.value.ValueStatus;
 
 /**
  * A Flag is a non-required Option that has no arguments.

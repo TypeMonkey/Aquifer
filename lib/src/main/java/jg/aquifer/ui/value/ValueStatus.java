@@ -1,4 +1,4 @@
-package jg.aquifer.ui;
+package jg.aquifer.ui.value;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
@@ -48,7 +48,7 @@ public class ValueStatus {
    *         has successfully verified the String value, false if else.
    */
   public boolean isVerified() {
-    return exception == null;
+    return exception == null && value != null;
   }
 
   public VerificationException getException() {

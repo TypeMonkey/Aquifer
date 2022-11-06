@@ -20,7 +20,7 @@ import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
-import jg.aquifer.ui.ValueStatus;
+import jg.aquifer.ui.value.ValueStatus;
 
 /**
  * An option is a named parameter to a Subcommand, which may or may not be required.
@@ -201,10 +201,7 @@ public class Option {
     });
     
     entryCellHBox.getChildren().add(argEntry);
-    
-    
     mainCellLayout.getChildren().add(entryCellHBox);
-    //mainCellLayout.getChildren().add(exceptionLabel);
     
     return mainCellLayout;
   }

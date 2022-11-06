@@ -1,11 +1,20 @@
 package jg.aquifer.commands.options;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -23,10 +32,15 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import jg.aquifer.commands.Subcommand;
+import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
+import jg.aquifer.ui.value.ExclusiveValueStatus;
+import jg.aquifer.ui.value.ValueStatus;
 
 
 public class ExclusiveOptions extends Option {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ExclusiveOptions.class);
 
   private final List<Option> options;
 
@@ -34,8 +48,28 @@ public class ExclusiveOptions extends Option {
                           String description, 
                           List<Option> options,
                           boolean isRequired) {
-    super(optName, description, isRequired);
+    super(optName, description, isRequired, makeExclusiveVerifier(options));
     this.options = Collections.unmodifiableList(options);
+  }
+
+  private static Verifier makeExclusiveVerifier(List<Option> options) {
+    return (op, form, arg) -> {
+      List<Option> givenOptions = new ArrayList<>();
+
+      for (Option option : options) {
+        if (option.valueProperty.getValue() != null && 
+            option.valueProperty.getValue().isVerified()) {
+          givenOptions.add(option);
+        }
+      }
+
+      if (givenOptions.size() > 1) {
+        String mess = "Only one option allowed to be selected. "+System.lineSeparator();
+        mess       += "The options '"+givenOptions.stream().map(x -> x.getOptName()).collect(Collectors.joining(","))+
+                      " have all been selected";
+        throw new VerificationException(mess);
+      }
+    };
   }
 
   @Override
@@ -58,6 +92,29 @@ public class ExclusiveOptions extends Option {
     optionsFlowPane.setPadding(new Insets(5,5,0,0));
     optionsFlowPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
+    final Label exceptionLabel = new Label();
+    exceptionLabel.setTextFill(Color.RED);
+
+    final ChangeListener<ValueStatus> changeListener = (o, oldValue, newValue) -> {
+      try {
+        getVerifier().verify(this, argumentForm, getDescription());
+        valueProperty.set(new ExclusiveValueStatus(this, newValue.getOption(), newValue.getValue(), newValue.getException()));
+        mainCellLayout.getChildren().remove(exceptionLabel);
+      } catch (VerificationException e) {
+        if(!mainCellLayout.getChildren().contains(exceptionLabel)) {
+          exceptionLabel.setText(e.getMessage());
+          mainCellLayout.getChildren().add(exceptionLabel);
+        }
+        
+        valueProperty.set(new ExclusiveValueStatus(this, newValue.getOption(), newValue.getValue(), e));
+      }     
+    };
+
+    //DEV NOTE: Remove this. Purely for testing
+    valueProperty.addListener((o, oldV, newV) -> {
+      LOG.info("Exclusive option given: "+newV);
+    });
+
     for (Option option : options) {
       final Pane optionPane = option.makeDisplay(argumentForm, subcommand);
       optionPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -68,6 +125,7 @@ public class ExclusiveOptions extends Option {
                                                  new BorderWidths(1))));
 
       optionsFlowPane.getChildren().add(optionPane);
+      option.valueProperty().addListener(changeListener);
     }
 
     mainCellLayout.getChildren().add(optionsFlowPane);    

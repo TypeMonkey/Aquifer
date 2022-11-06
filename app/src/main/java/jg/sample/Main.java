@@ -53,7 +53,7 @@ public class Main extends Application {
         ExclusiveOptions exclusiveOptions = new ExclusiveOptions("SampExclusive", 
                                                                 "Set of exclusive options", 
                                                                 Arrays.asList(exs), 
-                                                                false);
+                                                                true);
         program.addProgramOption(exclusiveOptions);
 
         program.addProgramOption(new Option("add", "Adds files in the current directory"));

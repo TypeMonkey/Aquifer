@@ -22,7 +22,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import jg.aquifer.commands.Subcommand;
 import jg.aquifer.commands.Verifier;
 import jg.aquifer.ui.RawArgumentForm;
-import jg.aquifer.ui.ValueStatus;
+import jg.aquifer.ui.value.ValueStatus;
 
 /**
  * A FileOption is a light extension of Option that

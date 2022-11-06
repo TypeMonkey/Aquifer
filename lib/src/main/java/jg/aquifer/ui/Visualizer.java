@@ -34,6 +34,7 @@ import jg.aquifer.ui.form.FormConstants;
 import jg.aquifer.ui.form.FormPane;
 import jg.aquifer.ui.io.IO;
 import jg.aquifer.ui.output.OutputPane;
+import jg.aquifer.ui.value.ValueStatus;
 
 /**
  * Houses logic for generating a JavaFX-based UI from a Program instance.
