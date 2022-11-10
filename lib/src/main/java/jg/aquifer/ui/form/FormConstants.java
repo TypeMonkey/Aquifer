@@ -78,7 +78,7 @@ public interface FormConstants {
   };
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
@@ -88,7 +88,7 @@ public interface FormConstants {
   public static final String TAB_SUFFIX = "Tab";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
@@ -100,7 +100,7 @@ public interface FormConstants {
   public static final String TAB_CONTENT_SUFFIX = "Content";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
@@ -112,79 +112,79 @@ public interface FormConstants {
   public static final String TAB_ANCHOR_SUFFIX = "AnchoredContent";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
-   * "commitTabReqList", which corresponds to a ListView<Option>
+   * "commitTabReqList", which corresponds to a {@literal ListView<Option>}
    * which holds the corresponding Subcommand's required Options
    */
   public static final String TAB_REQ_FPANE_SUFFIX = "ReqFPane";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
-   * "commitTabReqList", which corresponds to a ListView<Option>
+   * "commitTabReqList", which corresponds to a {@literal ListView<Option>}
    * which holds the corresponding Subcommand's optional/non-Flag Options
    */
   public static final String TAB_OPT_FPANE_SUFFIX = "OptFPane";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
-   * "commitTabReqList", which corresponds to a ListView<Option>
+   * "commitTabReqList", which corresponds to a {@literal ListView<Option>}
    * which holds the corresponding Subcommand's Flags
    */
   public static final String TAB_FLAG_LIST_SUFFIX = "FlagList";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
    * "commitTabReqPane", which corrsponds to a TitledPane
-   * which holds the corresponding required ListView<Option>
+   * which holds the corresponding required {@literal ListView<Option>}
    */
   public static final String TAB_REQ_PANE_SUFFIX = "ReqPane";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
    * "commitTabReqPane", which corrsponds to a TitledPane
-   * which holds the corresponding optional/non-Flag ListView<Option>
+   * which holds the corresponding optional/non-Flag {@literal ListView<Option>}
    */
   public static final String TAB_OPT_PANE_SUFFIX = "OptPane";
 
   /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".
    * 
    * Using this suffix and example, the ID should be 
    * "commitTabReqPane", which corrsponds to a TitledPane
-   * which holds the corresponding flag ListView<Option>
+   * which holds the corresponding flag {@literal ListView<Option>}
    */
   public static final String TAB_FLAG_PANE_SUFFIX = "FlagPane";
 
 /**
-   * Each Tab's ID is <subcommand name>Tab
+   * Each Tab's ID is {@literal <subcommand name>}Tab
    * 
    * For example, the ID of the "commit" subcommand
    * is "commitTab".

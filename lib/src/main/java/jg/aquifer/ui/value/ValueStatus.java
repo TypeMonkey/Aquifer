@@ -1,9 +1,5 @@
 package jg.aquifer.ui.value;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableStringValue;
 import jg.aquifer.commands.options.Option;
 import jg.aquifer.commands.options.VerificationException;
 
@@ -25,6 +21,9 @@ public class ValueStatus {
 
   /**
    * Constructs a Value that is initially verified
+   * 
+   * @param option - the Option this ValueStatus originates from
+   * @param value - the String argument
    */
   public ValueStatus(Option option, String value) {
     this(option, value, null);
@@ -32,6 +31,10 @@ public class ValueStatus {
   
   /**
    * Constructs a Value that is initially unverified
+   * 
+   * @param option - the Option this ValueStatus originates from
+   * @param value - the String argument
+   * @param exception - the VerificationException encountered while verifying the argument
    */
   public ValueStatus(Option option, String value, VerificationException exception) {
     this.option = option;

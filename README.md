@@ -71,13 +71,13 @@ Here's an example implementation
 public class ProgramIntake implements Intake {
 
   @Override
-  public void submitArguments(String subcommand, Map<String, String> args, Output output) {
+  public void submitArguments(String subcommand, Map<String, String> args, IO io) {
     if (subcommand.equals("subOne")) {
       // We retreive the inputted argument from the mapping
       String argument = args.get("req");
       
       // We can also print output to the GUI using printer.
-      output.out.println("You gave me the argument '"+argument+"'");
+      io.out.println("You gave me the argument '"+argument+"'");
     }
   }
 }
@@ -152,13 +152,19 @@ While the base `Option` class maybe sufficient for most needs, Aquifer comes wit
 A `Flag` is an `Option` that has **no arguments** and **isn't required**. They are displayed as selectable choices under the "*Flags*" section of the Subcommand it belongs to.
 
 ### RadioOption
-A `RadioOption` is an `Option` whose argument can only be **one out of a specified set of possible values**. Visually, it's synonymous with the idea of ["radio buttons"](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) - a group of buttons which only one can be selected at a time.
+A `RadioOption` is an `Option` whose argument can only be **one out of a specified set of possible values**. Visually, it's synonymous with the idea of ["radio buttons"](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) - a group of buttons which only one - or none - can be selected at a time.
 
 `RadioOptions` are either required or not, and are displayed similarly to a base `Option` but with the text field replaced with a group of radio buttons labeled with the choices provided.
 
+### FileOption
+A `FileOption` is a variant of the regular `Option` in that it allows users to choose a file and/or directory using the user's OS visual file viewer.
+
+### ExclusiveOptions
+An `ExclusiveOptions` is formed from a collection of unique `Option`, and only at most one of these options can be chosen to be an argument to the host `ExclusiveOptions`.
+
 ### Making your own Option type
-If there's use case that the bundled `Option` types doesn't quite answer, the `Option` class can be readily inherited for customization. 
-The `generateDisplay()` is the method that houses the display logic for an `Option`. This can be overridden with your own display logic that properly displays your custom `Option`.
+If there's use case that the bundled `Option` types doesn't quite answer, the `Option` class can be readily extended for customization. 
+The `generateDisplay()` is the method that houses the display logic for an `Option`. Override this method with the logic for visually displaying your implementation and you should be set!
 
 ## Download
 ### Maven
@@ -166,25 +172,28 @@ The `generateDisplay()` is the method that houses the display logic for an `Opti
 <dependency>
   <groupId>io.github.typemonkey</groupId>
   <artifactId>aquifer</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 ### Gradle
-`implementation 'io.github.typemonkey:aquifer:1.0.0'`
+`implementation 'io.github.typemonkey:aquifer:2.0.0-SNAPSHOT`
 
 ### Gradle (Kotlin)
-`implementation("io.github.typemonkey:aquifer:1.0.0")`
+`implementation("io.github.typemonkey:aquifer:2.0.0-SNAPSHOT")`
 
-Other build tools can be used as shown [here](https://search.maven.org/artifact/io.github.typemonkey/aquifer/1.0.0/jar).
+Other build tools can be used as shown [here](https://central.sonatype.dev/artifact/io.github.typemonkey/aquifer/1.0.0).
 
 ## Roadmap
 There's a lot I want to do with Aquifer. Here's what I currently have planned:
 - Bindings for various CLI Libraries (Commons CLI and PicoCLI are my priority)
-- Publish to Central Maven Repository
+- ~~Publish to Central Maven Repository~~ ( ___Done!___ )
 - New bundled Option types (numerical sliders, mutually exclusive options, etc)
+  - ___In 2.0:___ Mutually Exclusive options added
 - Better console output support (allowing user input)
+  - ___in 2.0:___ Seperate input area for user input  
 - Design improvements for the generated UI (Listener interface(s) for intake program - can check when user has exited/closed UI, etc.)
+  - ___in 2.0:___ Arguments to specific options are not observable. `getStage()` added to `Visualizer` so window listeners can be added easily.   
 - Create a Contribution Guide 
 
 If you have thoughts or opinions on how I could go about any of these goals, I'm all ears. Open up an issue or [email me](mailto:anothertypemonkey@gmail.com) describing what you have in mind and lets get working!

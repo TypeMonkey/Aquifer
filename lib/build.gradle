@@ -31,10 +31,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-group = 'io.github.typemonkey'
-version = '1.0.0'
-description = 'Aquifer'
-
 java {
     withSourcesJar()
     withJavadocJar()
@@ -66,61 +62,50 @@ artifacts {
     archives javadocJar
 }
 
-/*
-signing {
-    sign configurations.archives
-}
-*/
-
 publishing {
     publications {
-        
+        maven(MavenPublication) {
+            groupId = 'io.github.typemonkey'
+            artifactId = 'aquifer'
+            version = "2.0.0-SNAPSHOT"
+            from components.java
+
+            pom {
+                name = 'Aquifer'
+                description = 'A Java library that generates GUIs for terminal-based applications'
+                url = 'https://github.com/TypeMonkey/Aquifer'
+                inceptionYear = '2022'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Jose Guaro'
+                        email = 'anothertypemonkey@gmail.com'
+                        organizationUrl = 'https://github.com/TypeMonkey'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:TypeMonkey/Aquifer.git'
+                    developerConnection='scm:git:ssh://github.com:TypeMonkey/Aquifer.git'
+                    url='https://github.com/TypeMonkey/Aquifer/tree/master/src/main'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+            credentials {
+                username = "$usr"
+                password = "$pwd"
+            }
+        }
     }
 }
-
-/* 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'Aquifer'
-        packaging 'jar'
-        artifactId 'aquifer'
-        description 'GUI generator for command-line Java applications'
-        url 'https://github.com/TypeMonkey/Aquifer'
-
-        scm {
-          connection 'scm:git:git@github.com:TypeMonkey/Aquifer.git'
-          developerConnection 'scm:git:ssh://github.com:TypeMonkey/Aquifer.git'
-          url 'https://github.com/TypeMonkey/Aquifer/tree/master/src/main'
-        }
-
-        licenses {
-          license {
-            name 'MIT License'
-            url 'http://www.opensource.org/licenses/mit-license.php'
-          }
-        }
-
-        developers {
-          developer {
-            id 'TypeMonkey'
-            name 'Jose Guaro'
-            email 'anothertypemonkey@gmail.com'
-          }
-        }
-      }
-    }
-  }
-}
-*/

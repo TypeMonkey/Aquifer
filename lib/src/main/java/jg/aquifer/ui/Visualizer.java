@@ -281,4 +281,8 @@ public class Visualizer {
   public OutputPane getOutputPane() {
     return outputPane;
   }
+
+  public Stage getStage() {
+      return content;
+  }
 }

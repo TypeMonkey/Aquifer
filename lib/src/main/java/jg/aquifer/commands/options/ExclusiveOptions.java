@@ -37,7 +37,22 @@ import jg.aquifer.ui.RawArgumentForm;
 import jg.aquifer.ui.value.ExclusiveValueStatus;
 import jg.aquifer.ui.value.ValueStatus;
 
-
+/**
+ * Represents a set of Options where only one can be submitted.
+ * 
+ * This is similar to a RadioOption only one choice can be chosen
+ * from a set. The extension with ExclusiveOptions is that now instead
+ * of just plain String choices, it's a whole Option.
+ * 
+ * When evaulating the RawArgumentForm, the chosen Option's value
+ * will be in the form of {@literal <name of Option>:<given value>}
+ * 
+ * Note: ExclusiveOptions technically allow for other ExclusiveOptions
+ *       added (creating a multi-level tree of nested ExclusiveOptions).
+ *       
+ *       It's highly suggested to not do this as the generated UI will look
+ *       cluttered, and may even be unusable.
+ */
 public class ExclusiveOptions extends Option {
 
   private static final Logger LOG = LoggerFactory.getLogger(ExclusiveOptions.class);
@@ -52,8 +67,16 @@ public class ExclusiveOptions extends Option {
     this.options = Collections.unmodifiableList(options);
   }
 
+  /**
+   * Creates a Verifier from multiple Options and checks
+   * that at most, only one Option has a verified argument
+   * @param options - the Options to check from
+   * @return a Verifier that behaves as described above
+   */
   private static Verifier makeExclusiveVerifier(List<Option> options) {
     return (op, form, arg) -> {
+      //arg is never used as we only check the ValueStatus
+      //of the options in this ExclusiveOptions
       List<Option> givenOptions = new ArrayList<>();
 
       for (Option option : options) {
@@ -65,7 +88,7 @@ public class ExclusiveOptions extends Option {
 
       if (givenOptions.size() > 1) {
         String mess = "Only one option allowed to be selected. "+System.lineSeparator();
-        mess       += "The options '"+givenOptions.stream().map(x -> x.getOptName()).collect(Collectors.joining(","))+
+               mess += "The options '"+givenOptions.stream().map(x -> x.getOptName()).collect(Collectors.joining(","))+
                       " have all been selected";
         throw new VerificationException(mess);
       }
@@ -97,7 +120,7 @@ public class ExclusiveOptions extends Option {
 
     final ChangeListener<ValueStatus> changeListener = (o, oldValue, newValue) -> {
       try {
-        getVerifier().verify(this, argumentForm, getDescription());
+        getVerifier().verify(this, argumentForm, newValue.getValue());
         valueProperty.set(new ExclusiveValueStatus(this, newValue, newValue.getException()));
         mainCellLayout.getChildren().remove(exceptionLabel);
       } catch (VerificationException e) {
