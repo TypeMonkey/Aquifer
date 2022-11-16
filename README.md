@@ -161,6 +161,7 @@ program.addOption(new Flag("size", "print the allocated size of each file, in bl
 ```
 
 which results in:
+
 ![](https://i.imgur.com/ZBwdFE4.png)
 
 ### RadioOption
@@ -183,6 +184,7 @@ program.addOption(gcModes);
 ```
 
 which results in:
+
 ![](https://i.imgur.com/oYpUXrw.png)
 
 ### FileOption
@@ -200,7 +202,9 @@ program.addOption(jarOption);
 ```
 
 which results in:
+
 ![](https://i.imgur.com/yucALxT.png)
+
 Pressing __Browse...__ opens the user's file viewer.
 
 ### ExclusiveOptions
@@ -235,7 +239,9 @@ program.addOption(exclusiveOptions);
 ```
 
 which results in:
+
 ![](https://i.imgur.com/yU6kAG4.png)
+
 Only one of the three `Options` can be selected.
 
 ### Making your own Option type
