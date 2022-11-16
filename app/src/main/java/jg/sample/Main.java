@@ -48,26 +48,28 @@ public class Main extends Application {
           new Option("ex1", "some exclusive option 1"),
           new Option("ex2", "some exclusive option 2"), 
           new RadioOption("ex3", "some exclusive option 2", false, "choice1", "choice2", "choice3"),
+          new Flag("Enable Assertions", "Whether to enforce assertions"),
+          new Flag("Enable Disertions", "Whether to enforce assertions")
         };
 
         ExclusiveOptions exclusiveOptions = new ExclusiveOptions("SampExclusive", 
                                                                 "Set of exclusive options", 
                                                                 Arrays.asList(exs), 
                                                                 true);
-        program.addProgramOption(exclusiveOptions);
+        program.addOption(exclusiveOptions);
 
-        program.addProgramOption(new Option("add", "Adds files in the current directory"));
-        program.addProgramOption(new Option("commit", "Commits files in the current directory"));
-        program.addProgramOption(new Option("push", "Pushes files in the current directory"));
+        program.addOption(new Option("add", "Adds files in the current directory"));
+        program.addOption(new Option("commit", "Commits files in the current directory"));
+        program.addOption(new Option("push", "Pushes files in the current directory"));
         
-        program.addProgramOption(new Option("amend", "Amends files in the current directory", true));
-        program.addProgramOption(new RadioOption("multiradio", "Multiple files in the current directory", true, "option1", "option2", "option3"));
+        program.addOption(new Option("amend", "Amends files in the current directory", true));
+        program.addOption(new RadioOption("multiradio", "Multiple files in the current directory", true, "option1", "option2", "option3"));
         //program.addProgramOption(new FileOption("multi", "Multiple files in the current directory", true, Verifier.STR_VERIFIER, new File(System.getProperty("user.home"))));
         
-        program.addProgramOption(new Flag("allowDups", "Allows duplicate files and something else"));
-        program.addProgramOption(new Flag("flag2", "2Allows duplicate files"));
-        program.addProgramOption(new Flag("flag3", "3Allows duplicate files"));
-        program.addProgramOption(new Flag("flag4", "4Allows duplicate files"));
+        program.addOption(new Flag("allowDups", "Allows duplicate files and something else"));
+        program.addOption(new Flag("flag2", "2Allows duplicate files"));
+        program.addOption(new Flag("flag3", "3Allows duplicate files"));
+        program.addOption(new Flag("flag4", "4Allows duplicate files"));
 
 
         Visualizer generator = new Visualizer(program, new Intake() {

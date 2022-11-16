@@ -19,5 +19,6 @@ java {
 }
 
 application {
-    mainClassName = 'jg.sample.Main'
+    //applicationDefaultJvmArgs = ['-XX:+UseConcMarkSweepGC', '-XX:+UseParallelGC']
+    mainClassName = 'jg.sample.RMExamples'
 }

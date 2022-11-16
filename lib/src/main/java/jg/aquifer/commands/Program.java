@@ -62,7 +62,7 @@ public class Program {
    * Adds the given Option to this Program's Subcommand representation
    * @param option - the Option to add
    */
-  public void addProgramOption(Option option) {
+  public void addOption(Option option) {
 	  getSubcommandRepr().addOption(option);
   }
 	

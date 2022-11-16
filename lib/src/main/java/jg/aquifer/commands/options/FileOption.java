@@ -37,21 +37,41 @@ import jg.aquifer.ui.value.ValueStatus;
 public class FileOption extends Option {
   
   private FileChooser fileChooser;
-  
+
   /**
-   * Constructs an FileOption from a base Option
-   * @param option - the base Option
-   * @param startingDirectory - the directory to start the file chooser at
+   * Constructs an FileOption with the initial directory dictated by {@code System.getProperty("user.dir")}
+   * and a passive Verifier {@code Verifier.STR_VERIFIER}
+   * @param optName - the name of this FileOption
+   * @param description - the description of this FileOption
+   * @param isRequired - whether this FileOption is required
+   * @param verifier - the Verifier to use to validate arguments to this FileOption
    * @param extensionFilters - the file extension filters to filter file listings by
    */
-  public FileOption(Option option,
-                    File startingDirectory,
+  public FileOption(String optName, 
+                    String description, 
+                    boolean isRequired, 
                     ExtensionFilter ... extensionFilters) {
-    this(option.getOptName(), option.getDescription(), option.isRequired(), option.getVerifier(), startingDirectory, extensionFilters);
+    this(optName, description, isRequired, Verifier.STR_VERIFIER, new File(System.getProperty("user.dir")), extensionFilters);
   }
 
   /**
-   * Constructs an FileOption with 
+   * Constructs an FileOption with the initial directory dictated by {@code System.getProperty("user.dir")}
+   * @param optName - the name of this FileOption
+   * @param description - the description of this FileOption
+   * @param isRequired - whether this FileOption is required
+   * @param verifier - the Verifier to use to validate arguments to this FileOption
+   * @param extensionFilters - the file extension filters to filter file listings by
+   */
+  public FileOption(String optName, 
+                    String description, 
+                    boolean isRequired, 
+                    Verifier verifier,
+                    ExtensionFilter ... extensionFilters) {
+    this(optName, description, isRequired, verifier, new File(System.getProperty("user.dir")), extensionFilters);
+  }
+
+  /**
+   * Constructs an FileOption 
    * @param optName - the name of this FileOption
    * @param description - the description of this FileOption
    * @param isRequired - whether this FileOption is required

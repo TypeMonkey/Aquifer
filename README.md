@@ -143,7 +143,7 @@ program.setIcon(appIcon);
 
 which gives us something similar to:
 
-![enter image description here](https://i.imgur.com/eMJqzBZ.png)
+![](https://i.imgur.com/eMJqzBZ.png)
 
 ## Option Types
 While the base `Option` class maybe sufficient for most needs, Aquifer comes with a few other *options*.
@@ -151,16 +151,92 @@ While the base `Option` class maybe sufficient for most needs, Aquifer comes wit
 ### Flag
 A `Flag` is an `Option` that has **no arguments** and **isn't required**. They are displayed as selectable choices under the "*Flags*" section of the Subcommand it belongs to.
 
+Below, we re-create the `ls` terminal command, using `Flags` to declare the command's many flags.
+```java
+Program program = new Program("ls", "Lists contents of a directory");
+
+program.addOption(new Flag("all", "do not ignore entries starting with ."));
+program.addOption(new Flag("recursive", "list subdirectories recursively"));
+program.addOption(new Flag("size", "print the allocated size of each file, in blocks"));
+```
+
+which results in:
+![](https://i.imgur.com/ZBwdFE4.png)
+
 ### RadioOption
 A `RadioOption` is an `Option` whose argument can only be **one out of a specified set of possible values**. Visually, it's synonymous with the idea of ["radio buttons"](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio) - a group of buttons which only one - or none - can be selected at a time.
 
 `RadioOptions` are either required or not, and are displayed similarly to a base `Option` but with the text field replaced with a group of radio buttons labeled with the choices provided.
 
+Below, we use a `RadioOption` - with each possible value representing a supported Garbage Collection mode for the Java Virtual Machine. Only one mode can be chosen at a time.
+```java
+Program program = new Program("jrunner", "Runs an executable JAR with the given JVM arguments");
+
+RadioOption gcModes = new RadioOption("Garbage Collection Mode",
+                                      "Sets the Garbage collection mode of the running JVM",
+                                      false,            //whether this is a required Option
+                                      "Mark and Sweep", //option 1
+                                      "G1",             //option 2
+                                      "Serial",         //option 3
+                                      "Parallel");      //option 4
+program.addOption(gcModes);
+```
+
+which results in:
+![](https://i.imgur.com/oYpUXrw.png)
+
 ### FileOption
 A `FileOption` is a variant of the regular `Option` in that it allows users to choose a file and/or directory using the user's OS visual file viewer.
 
+Below, we extend the example from above and add a required `FileOption` that allows users to visually pick a `.jar` file from their file system.
+
+```java
+ExtensionFilter jarFiler = new ExtensionFilter("JAR File", "*.jar", "*.JAR");
+FileOption jarOption = new FileOption("Target JAR File", 
+                                      "The JAR file to run", 
+                                      true, 
+                                      jarFiler);
+program.addOption(jarOption);
+```
+
+which results in:
+![](https://i.imgur.com/yucALxT.png)
+Pressing __Browse...__ opens the user's file viewer.
+
 ### ExclusiveOptions
 An `ExclusiveOptions` is formed from a collection of unique `Option`, and only at most one of these options can be chosen to be an argument to the host `ExclusiveOptions`.
+
+Below, we have a variant of Git's `commit` message option. Our variant allows for a commit message to be from a file (`FileOption`), be a one-liner (`Option`) or be chosen from a set of short phrases.
+
+```java
+Program program = new Program("Quick Git", "Collection of Git shortcuts");
+
+RadioOption quickMs = new RadioOption("Quick Git Message", 
+                                      "Collection of quick commit messages", 
+                                      false, 
+                                      "Minor bug fixes", 
+                                      "Major fixes. See file changes...", 
+                                      "I messed up my line endings. This will hopefully fix it,");
+
+FileOption commitFile = new FileOption("Commit File", 
+                                      "Choose a file as your commit message", 
+                                      true);
+
+Option commitEntry = new Option("Enter Commit Message", "Enter a one-line commit message", true);
+
+ExclusiveOptions exclusiveOptions = new ExclusiveOptions("Commit Message", 
+                                                          "The message to attach to this commit", 
+                                                          Arrays.asList(quickMs, commitFile, commitEntry), true);
+
+//Note: it only matters that whether ExclusiveOptions is required or not
+//      , ignoring the required status of its child Options
+
+program.addOption(exclusiveOptions);
+```
+
+which results in:
+![](https://i.imgur.com/yU6kAG4.png)
+Only one of the three `Options` can be selected.
 
 ### Making your own Option type
 If there's use case that the bundled `Option` types doesn't quite answer, the `Option` class can be readily extended for customization. 
